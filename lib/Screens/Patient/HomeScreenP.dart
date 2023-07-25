@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:diabetes_ms/Components/Forms/BloodReport.dart';
+import 'package:diabetes_ms/Components/Forms/Insulin.dart';
+import 'package:diabetes_ms/Components/Forms/MealInTake.dart';
 import 'package:diabetes_ms/Screens/OnBoarding/ProfilePic.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import '../../Components/CustomListTitle.dart';
+import '../../Components/Forms/Activity.dart';
 import '../../Components/Forms/BloodGlucose.dart';
 
 class HomeScreenP extends StatefulWidget {
@@ -78,6 +82,55 @@ class _HomeScreenPState extends State<HomeScreenP> {
       ),
       builder: (BuildContext context) {
         return BloodSugarEntryBottomSheet();
+      },
+    );
+  }
+
+  void openInsulinEntryDialog() {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+      ),
+      builder: (BuildContext context) {
+        return InsulinEntryBottomSheet();
+      },
+    );
+  }
+
+  void openMealIntakeEntryDialog() {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+      ),
+      builder: (BuildContext context) {
+        return MealIntakeEntryBottomSheet();
+      },
+    );
+  }
+
+  void openActivityEntryDialog() {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+      ),
+      builder: (BuildContext context) {
+        return ActivityEntryBottomSheet();
+      },
+    );
+  }
+
+  void openBloodReportEntryDialog() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+      ),
+      builder: (BuildContext context) {
+        return BloodReportEntryBottomSheet();
       },
     );
   }
@@ -288,18 +341,28 @@ class _HomeScreenPState extends State<HomeScreenP> {
                             heading: 'Insulin Taken',
                             subheading: 'Keep a Record of Your Insulin Intake',
                             trailingIcon: Icons.add_box_rounded,
+                            onTap: openInsulinEntryDialog,
                           ),
                           CustomListTile(
                             leadingIcon: Image.asset('assets/images/meal.png'),
                             heading: 'Meal Intake',
                             subheading: 'Keep Track of Your Daily Meal Intake',
                             trailingIcon: Icons.add_box_rounded,
+                            onTap:openMealIntakeEntryDialog,
+                          ),
+                          CustomListTile(
+                            leadingIcon: Image.asset('assets/images/physical_activity.png'),
+                            heading: 'Physical Activity ',
+                            subheading: 'Record Your physical activity',
+                            trailingIcon: Icons.add_box_rounded,
+                            onTap: openActivityEntryDialog,
                           ),
                           CustomListTile(
                             leadingIcon: Image.asset('assets/images/blood.png'),
                             heading: 'Blood Report',
                             subheading: 'Record Your Blood Test Results',
                             trailingIcon: Icons.add_box_rounded,
+                            onTap: openBloodReportEntryDialog,
                           ),
                         ],
                       )
