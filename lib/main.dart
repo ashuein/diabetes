@@ -16,7 +16,6 @@ Future<void> main() async {
   onboardingCompleted = await prefs.getBool('onboardingCompleted') ?? false;
   isDoctor = await prefs.getBool('isDoctor') ?? false;
   runApp(MyApp());
-  print(isDoctor);
 }
 
 class MyApp extends StatelessWidget {

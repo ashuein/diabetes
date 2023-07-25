@@ -47,7 +47,7 @@ class _SignInPageState extends State<SignInPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text(
-                  "To start working wiht the app.we need to verify your phone number.This app will send a SMS message to your phone",
+                  "To start working with the app.we need to verify your phone number.This app will send a SMS message to your phone",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.inter(
                     textStyle: const TextStyle(

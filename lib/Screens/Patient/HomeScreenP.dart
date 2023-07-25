@@ -9,8 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-
 import '../../Components/CustomListTitle.dart';
+import '../../Components/Forms/BloodGlucose.dart';
 
 class HomeScreenP extends StatefulWidget {
   const HomeScreenP({super.key});
@@ -23,6 +23,12 @@ class _HomeScreenPState extends State<HomeScreenP> {
   late String phoneNumber;
   late SharedPreferences prefs;
   String _profilePicturePath = '';
+
+
+  final TextEditingController bloodSugarController = TextEditingController();
+  DateTime selectedDate = DateTime.now();
+  DateTime selectedTime = DateTime.now();
+  String mealType = '';
 
   @override
   void initState() {
@@ -63,6 +69,19 @@ class _HomeScreenPState extends State<HomeScreenP> {
       print(error);
     }
   }
+
+  void openBloodSugarEntryDialog() {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+      ),
+      builder: (BuildContext context) {
+        return BloodSugarEntryBottomSheet();
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -262,7 +281,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
                             heading: 'Blood Sugar',
                             subheading: 'Keep Track of Your Blood Sugar Readings',
                             trailingIcon: Icons.add_box_rounded,
-                            onTap: () => _showJohnDoeDialog(context),
+                            onTap: openBloodSugarEntryDialog,
                           ),
                           CustomListTile(
                             leadingIcon: Image.asset('assets/images/insulin.png'),
@@ -297,20 +316,4 @@ class _HomeScreenPState extends State<HomeScreenP> {
 }
 
 
-void _showJohnDoeDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('John Doe Dialog'),
-        content: Text('This is a dialog for John Doe.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Close'),
-          ),
-        ],
-      );
-    },
-  );
-}
+
