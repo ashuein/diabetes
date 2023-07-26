@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Providers/UserInfo.dart';
+import 'Screens/Patient/GraphsScreen.dart';
 
 
 late bool onboardingCompleted;
@@ -29,7 +30,8 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: onboardingCompleted ? isDoctor ? HomeScreenD() : HomeScreenP() : SignInPage() ,
+        // home: onboardingCompleted ? isDoctor ? HomeScreenD() : HomeScreenP() : SignInPage() ,
+        home: GraphScreen(),
       ),
     );
   }

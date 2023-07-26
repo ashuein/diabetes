@@ -3,6 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+import '../../Providers/UserInfo.dart';
 
 class BloodSugarEntryBottomSheet extends StatefulWidget {
   @override
@@ -232,6 +235,7 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
       'selectedTime': timeStr,
       'mealType': mealType,
       'bloodSugar': bloodSugarController.text,
+      'phoneNumber': context.read<UserProvider>().phoneNumber
     };
 
     final url = 'http://10.0.2.2:5000/save_blood_sugar';

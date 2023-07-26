@@ -352,7 +352,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
                           ),
                           CustomListTile(
                             leadingIcon: Image.asset('assets/images/physical_activity.png'),
-                            heading: 'Physical Activity ',
+                            heading: 'Physical Activity',
                             subheading: 'Record Your physical activity',
                             trailingIcon: Icons.add_box_rounded,
                             onTap: openActivityEntryDialog,
