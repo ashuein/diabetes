@@ -30,8 +30,8 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        // home: onboardingCompleted ? isDoctor ? HomeScreenD() : HomeScreenP() : SignInPage() ,
-        home: GraphScreen(),
+        home: onboardingCompleted ? isDoctor ? HomeScreenD() : HomeScreenP() : SignInPage() ,
+        // home: HomeScreenD(),
       ),
     );
   }
