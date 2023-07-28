@@ -4,6 +4,7 @@ import 'package:diabetes_ms/Components/Forms/BloodReport.dart';
 import 'package:diabetes_ms/Components/Forms/Insulin.dart';
 import 'package:diabetes_ms/Components/Forms/MealInTake.dart';
 import 'package:diabetes_ms/Screens/OnBoarding/ProfilePic.dart';
+import 'package:diabetes_ms/Screens/Patient/Profile.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:diabetes_ms/Providers/UserInfo.dart';
@@ -15,6 +16,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import '../../Components/CustomListTitle.dart';
 import '../../Components/Forms/Activity.dart';
 import '../../Components/Forms/BloodGlucose.dart';
+import 'GraphsScreen.dart';
 
 class HomeScreenP extends StatefulWidget {
   const HomeScreenP({super.key});
@@ -58,7 +60,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
     try {
       final response = await http.get(Uri.parse(url));
       final data = json.decode(response.body);
-
+      print(data);
       context.read<UserProvider>().setName(data['name']);
       context.read<UserProvider>().setPhoneNumber(data['phoneNumber']);
       context.read<UserProvider>().setDateOfBirth(data['dateOfBirth']);
@@ -203,7 +205,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProfilePic(),
+                            builder: (context) => ProfilePage(),
                           ),
                         );
                       },
@@ -371,6 +373,25 @@ class _HomeScreenPState extends State<HomeScreenP> {
                 )
               ],
             ),
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor:Color(0xff6373CC),
+        onPressed: () {
+          // Navigate to another page when the floating button is pressed.
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => GraphScreen()),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Icon(Icons.stacked_bar_chart_sharp),
+              Text('Stats',style: TextStyle(fontSize: 12),),
+            ],
           ),
         ),
       ),

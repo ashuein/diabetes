@@ -45,6 +45,7 @@ dependencies:
   percent_indicator: ^4.2.3
   fl_chart: ^0.63.0
   syncfusion_flutter_charts: ^22.1.39
+  postgres: ^2.6.1
 
 dev_dependencies:
   flutter_test:

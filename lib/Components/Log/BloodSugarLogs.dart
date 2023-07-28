@@ -1,13 +1,14 @@
+import 'package:diabetes_ms/Providers/UserInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class BloodSugarLog extends StatelessWidget {
-  Future<List<BloodSugarEntry>> fetchBloodSugarData() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:5000/blood_sugar_records'));
+  Future<List<BloodSugarEntry>> fetchBloodSugarData(phoneNumber) async {
+    final response = await http.get(Uri.parse('http://10.0.2.2:5000/blood_sugar_records/$phoneNumber'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       return data.map((entry) {
@@ -25,13 +26,21 @@ class BloodSugarLog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
-          title: Text('Blood Sugar Tracker'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(color:Color(0xffF86851)),
+          title: Text('Blood Sugar Tracker',style: GoogleFonts.inter(
+            textStyle: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Color(0xffF86851),
+            ),
+          ),),
         ),
         body: FutureBuilder<List<BloodSugarEntry>>(
-          future: fetchBloodSugarData(),
+          future: fetchBloodSugarData(context.read<UserProvider>().phoneNumber),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -71,7 +80,6 @@ class BloodSugarLog extends StatelessWidget {
             }
           },
         ),
-      ),
     );
   }
 }

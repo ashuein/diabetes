@@ -12,7 +12,7 @@ class UserProvider extends ChangeNotifier {
   String? _familyHistory;
   String? _bloodGroup;
   String? _doctorid;
-  String? _status;
+  int? _status;
   File? _imageFile;
 
   String? get name => _name;
@@ -24,7 +24,7 @@ class UserProvider extends ChangeNotifier {
   String? get familyHistory => _familyHistory;
   String? get bloodGroup => _bloodGroup;
   String? get doctorid => _doctorid;
-  String? get status => _status;
+  int? get status => _status;
   File? get imageFile => _imageFile;
 
 
@@ -78,7 +78,7 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setStatus(String status) {
+  void setStatus(int status) {
     _status = status;
     notifyListeners();
   }
