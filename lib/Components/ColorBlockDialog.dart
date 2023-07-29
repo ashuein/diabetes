@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ColorBlocksDialog extends StatelessWidget {
   @override
@@ -10,9 +11,9 @@ class ColorBlocksDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ColorBlock(color: Colors.blue, text: "Block 1"),
-            ColorBlock(color: Colors.green, text: "Block 2"),
-            ColorBlock(color: Colors.red, text: "Block 3"),
+            ColorBlock(color: Colors.teal, text: "Before"),
+            ColorBlock(color: Colors.deepPurpleAccent, text: "After"),
+            ColorBlock(color: Colors.lightBlue, text: "Other"),
           ],
         ),
       ),
@@ -28,18 +29,24 @@ class ColorBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      color: color,
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            height: 50,
+            width: 50,
+            color: color,
           ),
-        ),
+          Text(text,style: GoogleFonts.inter(
+            textStyle: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),)
+        ],
       ),
     );
   }

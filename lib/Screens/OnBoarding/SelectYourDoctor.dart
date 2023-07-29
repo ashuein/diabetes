@@ -1,10 +1,12 @@
 import 'package:diabetes_ms/Providers/UserInfo.dart';
 import 'package:diabetes_ms/Screens/OnBoarding/ProfilePic.dart';
+import 'package:diabetes_ms/Screens/Patient/HomeScreenP.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +25,12 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
     fetchData();
   }
 
+  String imageToBase64(File imageFile) {
+    List<int> imageBytes = imageFile.readAsBytesSync();
+    String base64Image = base64Encode(imageBytes);
+    return base64Image;
+  }
+
   void addUser() async {
 
     var name = context.read<UserProvider>().name;
@@ -34,6 +42,8 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
     var familyHistory = context.read<UserProvider>().familyHistory;
     var medicalCondition = context.read<UserProvider>().medicalCondition;
     var doctorid = context.read<UserProvider>().doctorid;
+    var profilepic = context.read<UserProvider>().imageFile;
+    var image = imageToBase64(profilepic!);
 
     final data = {
       "name": name,
@@ -46,6 +56,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
       "bloodGroup": bloodGroup,
       "status": 0,
       "doctorid": doctorid,
+      "image": image,
     };
 
     final response = await http.post(
@@ -114,7 +125,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ProfilePic(),
+                                builder: (context) => HomeScreenP(),
                               ),
                             );
                           },

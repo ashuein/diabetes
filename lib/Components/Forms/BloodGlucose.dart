@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Providers/UserInfo.dart';
 
@@ -217,6 +218,15 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
     );
   }
 
+  Future<void> _updateProgress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    double updatedProgress = context.read<UserProvider>().log! + 1;
+    context.read<UserProvider>().setLog(updatedProgress);
+    await prefs.setDouble('userProgress', updatedProgress);
+    await prefs.setString('lastDate', DateTime.now().toIso8601String());
+  }
+
+
   // Function to save the blood sugar entry
   Future<void> saveBloodSugarEntry() async {
 
@@ -248,6 +258,7 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
 
     if (response.statusCode == 201) {
       print('Blood sugar record saved successfully');
+      _updateProgress();
       // Handle success
     } else {
       print('Failed to save blood sugar record');

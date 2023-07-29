@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:diabetes_ms/Components/Forms/BloodReport.dart';
 import 'package:diabetes_ms/Components/Forms/Insulin.dart';
 import 'package:diabetes_ms/Components/Forms/MealInTake.dart';
@@ -16,6 +17,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import '../../Components/CustomListTitle.dart';
 import '../../Components/Forms/Activity.dart';
 import '../../Components/Forms/BloodGlucose.dart';
+import 'ChangeProfilePic.dart';
 import 'GraphsScreen.dart';
 
 class HomeScreenP extends StatefulWidget {
@@ -29,6 +31,8 @@ class _HomeScreenPState extends State<HomeScreenP> {
   late String phoneNumber;
   late SharedPreferences prefs;
   String _profilePicturePath = '';
+  double _progress = 0;
+  late DateTime _lastDate;
 
 
   final TextEditingController bloodSugarController = TextEditingController();
@@ -40,18 +44,24 @@ class _HomeScreenPState extends State<HomeScreenP> {
   void initState() {
     super.initState();
     OnBoaringCompleted();
+    _loadProgress();
   }
 
   Future<void> OnBoaringCompleted() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboardingCompleted', true);
-    _profilePicturePath = prefs.getString('profilePicturePath') ?? '';
-    if (_profilePicturePath.isNotEmpty) {
-      context.read<UserProvider>().setImageFile(File(_profilePicturePath));
-      setState(() {});
-    }
     phoneNumber = prefs.getString('phoneNumber') ?? "";
     fetchUserData(phoneNumber);
+  }
+
+
+  File base64ToFile(String base64String) {
+    Uint8List bytes = base64Decode(base64String);
+    String tempPath = Directory.systemTemp.path;
+    String fileName = 'profile_picture.png'; // Provide a suitable file name here
+    File file = File('$tempPath/$fileName');
+    file.writeAsBytesSync(bytes);
+    return file;
   }
 
   Future<void> fetchUserData(phoneNumber) async {
@@ -60,7 +70,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
     try {
       final response = await http.get(Uri.parse(url));
       final data = json.decode(response.body);
-      print(data);
+      // print(data);
       context.read<UserProvider>().setName(data['name']);
       context.read<UserProvider>().setPhoneNumber(data['phoneNumber']);
       context.read<UserProvider>().setDateOfBirth(data['dateOfBirth']);
@@ -71,6 +81,10 @@ class _HomeScreenPState extends State<HomeScreenP> {
       context.read<UserProvider>().setMedicalCondition(data['medicalCondition']);
       context.read<UserProvider>().setDoctorid(data['doctorid']);
       context.read<UserProvider>().setStatus(data['status']);
+
+      File profilePicFile = base64ToFile(data['profilepic']);
+      context.read<UserProvider>().setImageFile(profilePicFile);
+
     } catch (error) {
       print(error);
     }
@@ -137,6 +151,34 @@ class _HomeScreenPState extends State<HomeScreenP> {
     );
   }
 
+  Future<void> _loadProgress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    double currentProgress = prefs.getDouble('userProgress') ?? 0;
+    context.read<UserProvider>().setLog(currentProgress);
+    DateTime? lastDate = DateTime.tryParse(prefs.getString('lastDate') ?? '');
+    DateTime today = DateTime.now();
+
+    if (lastDate == null || lastDate.day != today.day) {
+      context.read<UserProvider>().setLog(0);
+      currentProgress = 0;
+    }
+
+    setState(() {
+      _lastDate = today;
+    });
+  }
+
+  Future<void> _updateProgress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    double updatedProgress = _progress + 1;
+    context.read<UserProvider>().setLog(updatedProgress);
+    await prefs.setDouble('userProgress', updatedProgress);
+    await prefs.setString('lastDate', DateTime.now().toIso8601String());
+
+    setState(() {
+      _progress = updatedProgress;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -253,8 +295,8 @@ class _HomeScreenPState extends State<HomeScreenP> {
                           new CircularPercentIndicator(
                             radius: 60.0,
                             lineWidth: 10.0,
-                            percent: 0.5,
-                            center: new Text("50%"),
+                            percent: context.read<UserProvider>().log! / 7,
+                            center: new Text('${(context.read<UserProvider>().log! / 7).toStringAsFixed(2)}%'),
                             progressColor: Color(0xff6373CC),
                           ),
                           Column(
@@ -274,7 +316,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
                                     height: 10,
                                   ),
                                   Text(
-                                    "5 out of 7 Completed",
+                                    "${(context.read<UserProvider>().log!).toInt()} out of 7 Completed",
                                     style: GoogleFonts.inter(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'ProfilePic.dart';
 import 'SelectYourDoctor.dart';
 
 class MedicalHistory extends StatefulWidget {
@@ -197,7 +198,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SelectYourDoctor(),
+                            builder: (context) => ProfilePic(),
                           ),
                         );
                       }

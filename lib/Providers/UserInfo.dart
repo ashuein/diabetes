@@ -14,6 +14,8 @@ class UserProvider extends ChangeNotifier {
   String? _doctorid;
   int? _status;
   File? _imageFile;
+  double? _log = 0;
+
 
   String? get name => _name;
   String? get phoneNumber => _phoneNumber;
@@ -26,6 +28,7 @@ class UserProvider extends ChangeNotifier {
   String? get doctorid => _doctorid;
   int? get status => _status;
   File? get imageFile => _imageFile;
+  double? get log => _log;
 
 
   void setImageFile(File file) {
@@ -80,6 +83,11 @@ class UserProvider extends ChangeNotifier {
 
   void setStatus(int status) {
     _status = status;
+    notifyListeners();
+  }
+
+  void setLog(double log) {
+    _log = log;
     notifyListeners();
   }
 

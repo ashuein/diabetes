@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
+import '../../Providers/UserInfo.dart';
+import '../ColorBlockDialog.dart';
+import '../Log/InsulinLog.dart';
 
 class InsulinGraph extends StatefulWidget {
   @override
@@ -16,12 +21,12 @@ class _InsulinGraphState extends State<InsulinGraph> {
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchData(context.read<UserProvider>().phoneNumber);
   }
 
-  Future<void> fetchData() async {
+  Future<void> fetchData(phoneNumber) async {
     final response =
-    await http.get(Uri.parse('http://10.0.2.2:5000/insulin_records'));
+    await http.get(Uri.parse('http://10.0.2.2:5000/insulin_records/$phoneNumber'));
     if (response.statusCode == 200) {
       setState(() {
         insulinData =
@@ -36,8 +41,35 @@ class _InsulinGraphState extends State<InsulinGraph> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xffF2F2F2),
       appBar: AppBar(
-        title: Text('Insulin Graph'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: IconThemeData(color: Color(0xff6373CC)),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Insulin Taken Statistics",
+              style: GoogleFonts.inter(
+                textStyle: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff6373CC),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.info_outlined),
+              onPressed: () => showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return ColorBlocksDialog();
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       body: Center(
         child: Container(
@@ -46,6 +78,19 @@ class _InsulinGraphState extends State<InsulinGraph> {
               ? buildInsulinGraph()
               : CircularProgressIndicator(),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xff6373CC),
+        onPressed: () {
+          // Show the dialog box with three blocks of colors and text
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => InsulinLog(),
+            ),
+          );
+        },
+        child: Icon(Icons.book),
       ),
     );
   }
@@ -56,14 +101,16 @@ class _InsulinGraphState extends State<InsulinGraph> {
       var insulin = double.parse(data['insulin']);
       var date = DateTime.parse(data['date']); // Assuming this contains the date portion in a valid format
       var timeString = data['time']; // Assuming this contains the time portion in the format "11:00:00"
-
+      var meal_time = data['meal_type'];
       List<String> timeComponents = timeString.split(':');
       int hour = int.parse(timeComponents[0]);
       int minute = int.parse(timeComponents[1]);
 
       var combinedDateTime = DateTime(date.year, date.month, date.day, hour, minute);
-      chartData.add(ChartData(combinedDateTime, insulin));
+      chartData.add(ChartData(combinedDateTime, insulin,meal_time));
     }
+
+    chartData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
 
     return SfCartesianChart(
       plotAreaBorderColor: Color(0xffF2F2F2),
@@ -129,8 +176,16 @@ class _InsulinGraphState extends State<InsulinGraph> {
                 var timeFormatter = DateFormat('hh:mm a');
                 String formattedTime = timeFormatter.format(data.dateTime);
 
-                final String customLabel =
-                    '$formattedDate \n $formattedTime \n ${data.insulin.toInt()}';
+                final String customLabel = '$formattedDate \n $formattedTime \n ${data.insulin.toInt()}';
+
+                var Boxcolor = Colors.black87;
+                if(data.meal_time == 'Before'){
+                  Boxcolor = Colors.teal;
+                } else if (data.meal_time == 'After'){
+                  Boxcolor = Colors.deepPurpleAccent;
+                } else{
+                  Boxcolor = Colors.lightBlue;
+                }
 
                 return Container(
                   child: Text(
@@ -138,7 +193,7 @@ class _InsulinGraphState extends State<InsulinGraph> {
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
                       textStyle: TextStyle(
-                        fontSize: 12,
+                        fontSize: 8,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -146,7 +201,7 @@ class _InsulinGraphState extends State<InsulinGraph> {
                   ),
                   padding: EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    color: Color(0xffF86851),
+                    color: Boxcolor,
                     borderRadius: BorderRadius.circular(5),
                   ),
                 );
@@ -173,6 +228,7 @@ class _InsulinGraphState extends State<InsulinGraph> {
 class ChartData {
   final DateTime dateTime;
   final double insulin;
+  final meal_time;
 
-  ChartData(this.dateTime, this.insulin);
+  ChartData(this.dateTime, this.insulin,this.meal_time);
 }

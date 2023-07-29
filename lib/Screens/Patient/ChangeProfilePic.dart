@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:diabetes_ms/Providers/UserInfo.dart';
 import 'package:diabetes_ms/Screens/OnBoarding/SelectYourDoctor.dart';
@@ -7,31 +8,52 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
-class ProfilePic extends StatefulWidget {
+class ChnageProfilePic extends StatefulWidget {
   static String id = "ProfilePic";
-  const ProfilePic({Key? key}) : super(key: key);
+  const ChnageProfilePic({Key? key}) : super(key: key);
 
   @override
-  State<ProfilePic> createState() => _ProfilePicState();
+  State<ChnageProfilePic> createState() => _ChnageProfilePicState();
 }
 
-class _ProfilePicState extends State<ProfilePic> {
+class _ChnageProfilePicState extends State<ChnageProfilePic> {
   late SharedPreferences prefs;
   late String profilePicturePath;
 
   @override
   void initState() {
     super.initState();
-    initializeSharedPreferences();
   }
 
-  Future<void> initializeSharedPreferences() async {
-    prefs = await SharedPreferences.getInstance();
-    profilePicturePath = prefs.getString('profilePicturePath') ?? '';
-    if (profilePicturePath.isNotEmpty) {
-      context.read<UserProvider>().setImageFile(File(profilePicturePath));
-      setState(() {});
+  Future<void> updateProfilePicture(File imageFile, String phoneNumber) async {
+    try {
+      final url = 'http://10.0.2.2:5000/update_profile'; // Replace with your API endpoint
+      String base64Image = base64Encode(await imageFile.readAsBytes());
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          'phone_number': phoneNumber,
+          'image': base64Image,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Profile picture updated successfully
+        print('Profile picture updated successfully');
+        // You can add further actions or display a success message here if needed
+      } else {
+        // Failed to update profile picture
+        print('Failed to update profile picture: ${response.body}');
+        // You can display an error message here if needed
+      }
+    } catch (e) {
+      // Error occurred during API call
+      print('Error occurred during API call: $e');
+      // You can display an error message here if needed
     }
   }
 
@@ -44,15 +66,14 @@ class _ProfilePicState extends State<ProfilePic> {
       File imageFile = File(imagePath);
 
       await imageFile.writeAsBytes(await pickedImage.readAsBytes());
-      await prefs.setString('profilePicturePath', imagePath);
-
-      profilePicturePath = (await prefs.getString('profilePicturePath'))!;
-
-      context.read<UserProvider>().setImageFile(File(profilePicturePath));
+      context.read<UserProvider>().setImageFile(File(imagePath));
 
       setState(() {
         profilePicturePath = imagePath;
       });
+
+      String? phoneNumber = context.read<UserProvider>().phoneNumber;
+      await updateProfilePicture(imageFile, phoneNumber!);
     }
   }
 
@@ -65,7 +86,7 @@ class _ProfilePicState extends State<ProfilePic> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Add a Profile Picture',
+              'Change Profile Picture',
               style: GoogleFonts.inter(
                 color: Color(0xff6373CC),
                 textStyle: TextStyle(
@@ -94,8 +115,8 @@ class _ProfilePicState extends State<ProfilePic> {
                           return CircleAvatar(
                               radius: 150,
                               backgroundImage:
-                                  FileImage(imageProvider.imageFile!)
-                                      as ImageProvider);
+                              FileImage(imageProvider.imageFile!)
+                              as ImageProvider);
                         }
                       },
                     ),
@@ -146,13 +167,13 @@ class _ProfilePicState extends State<ProfilePic> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SelectYourDoctor(),
+                    builder: (context) => HomeScreenP(),
                   ),
                 );
               },
               style: ElevatedButton.styleFrom(
                 textStyle:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 minimumSize: Size(MediaQuery.of(context).size.width * 0.75, 0),
                 shape: RoundedRectangleBorder(
@@ -160,31 +181,7 @@ class _ProfilePicState extends State<ProfilePic> {
                 ),
                 backgroundColor: Color(0xff6373CC),
               ),
-              child: const Text('Set Profile Picture'),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SelectYourDoctor(),
-                    ),
-                  );
-                },
-                child:Text(
-                  'Skip',
-                  textAlign: TextAlign.right,
-                  style: GoogleFonts.inter(
-                    color: Color(0xffF86851),
-                    textStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ),
+              child: const Text('Back'),
             ),
           ],
         ),

@@ -1,9 +1,11 @@
+import 'package:diabetes_ms/Screens/Patient/ChangeProfilePic.dart';
 import 'package:diabetes_ms/Screens/OnBoarding/ProfilePic.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../Providers/UserInfo.dart';
+import 'ChangeDoctor.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -50,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProfilePic(),
+                        builder: (context) => ChnageProfilePic(),
                       ),
                     );
                   },
@@ -151,7 +153,44 @@ class _ProfilePageState extends State<ProfilePage> {
                     );
                   },
                 ),
-
+                SizedBox(height: 40,),
+                ElevatedButton(
+                  onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChangeYourDoctor(),
+                        ),
+                      );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff6373CC),
+                    textStyle: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    minimumSize:
+                    Size(MediaQuery.of(context).size.width, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal:20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Change Your Doctor',
+                          style: GoogleFonts.inter(
+                              textStyle: const TextStyle(
+                                fontSize: 16,
+                              )),
+                        ),
+                        Icon(Icons.arrow_forward_ios),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

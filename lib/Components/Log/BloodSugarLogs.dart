@@ -31,7 +31,7 @@ class BloodSugarLog extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           iconTheme: IconThemeData(color:Color(0xffF86851)),
-          title: Text('Blood Sugar Tracker',style: GoogleFonts.inter(
+          title: Text('Blood Sugar Logs',style: GoogleFonts.inter(
             textStyle: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -39,46 +39,62 @@ class BloodSugarLog extends StatelessWidget {
             ),
           ),),
         ),
-        body: FutureBuilder<List<BloodSugarEntry>>(
-          future: fetchBloodSugarData(context.read<UserProvider>().phoneNumber),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error fetching data'));
-            } else {
-              final bloodSugarData = snapshot.data!;
-              // Sort the data by date
-              bloodSugarData.sort((a, b) => a.date.compareTo(b.date));
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: FutureBuilder<List<BloodSugarEntry>>(
+            future: fetchBloodSugarData(context.read<UserProvider>().phoneNumber),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error fetching data'));
+              } else {
+                final bloodSugarData = snapshot.data!;
+                // Sort the data by date
+                bloodSugarData.sort((a, b) => b.date.compareTo(a.date));
+                // Group the data by date
+                Map<String, List<BloodSugarEntry>> groupedData = {};
+                bloodSugarData.forEach((entry) {
+                  String key = DateFormat('yyyy-MM-dd').format(entry.date);
+                  groupedData.putIfAbsent(key, () => []);
+                  groupedData[key]?.add(entry);
+                });
 
-              // Group the data by date
-              Map<String, List<BloodSugarEntry>> groupedData = {};
-              bloodSugarData.forEach((entry) {
-                String key = DateFormat('yyyy-MM-dd').format(entry.date);
-                groupedData.putIfAbsent(key, () => []);
-                groupedData[key]?.add(entry);
-              });
-
-              return ListView.builder(
-                itemCount: groupedData.length,
-                itemBuilder: (context, index) {
-                  String key = groupedData.keys.elementAt(index);
-                  List<BloodSugarEntry> entries = groupedData[key]!;
-                  return ListTile(
-                    title: Text('Date: $key'),
-                    subtitle: Column(
-                      children: entries.map((entry) {
-                        String formattedTime = DateFormat('HH:mm:ss').format(entry.time);
-                        return Text(
-                          'Time: $formattedTime, Blood Sugar: ${entry.bloodSugar}, Meal Type: ${entry.mealType}',
-                        );
-                      }).toList(),
-                    ),
-                  );
-                },
-              );
-            }
-          },
+                return ListView.builder(
+                  itemCount: groupedData.length,
+                  itemBuilder: (context, index) {
+                    String key = groupedData.keys.elementAt(index);
+                    List<BloodSugarEntry> entries = groupedData[key]!;
+                    return ListTile(
+                      title: Text('Date: $key',style: GoogleFonts.inter(
+                        textStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff6373CC),
+                        ),
+                      ),),
+                      subtitle: Column(
+                        children: entries.map((entry) {
+                          String formattedTime = DateFormat('HH:mm').format(entry.time);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Text(
+                              'Time: $formattedTime, Blood Sugar: ${entry.bloodSugar}, Meal Type: ${entry.mealType}',style: GoogleFonts.inter(
+                              textStyle: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    );
+                  },
+                );
+              }
+            },
+          ),
         ),
     );
   }

@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-
 import '../ColorBlockDialog.dart';
 import '../Log/BloodSugarLogs.dart';
 
@@ -80,6 +79,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xff6373CC),
         onPressed: () {
           // Show the dialog box with three blocks of colors and text
           Navigator.push(
@@ -106,8 +106,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
       int hour = int.parse(timeComponents[0]);
       int minute = int.parse(timeComponents[1]);
 
-      var combinedDateTime =
-          DateTime(date.year, date.month, date.day, hour, minute);
+      var combinedDateTime = DateTime(date.year, date.month, date.day, hour, minute);
       chartData.add(ChartData(combinedDateTime, bloodSugar,meal_time));
     }
 
@@ -180,7 +179,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
 
                 var Boxcolor = Colors.black87;
                 if(data.meal_time == 'Before'){
-                  Boxcolor = Color(0xffF86851);
+                  Boxcolor = Colors.teal;
                 } else if (data.meal_time == 'After'){
                   Boxcolor = Colors.deepPurpleAccent;
                 } else{
@@ -193,7 +192,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
                       textStyle: TextStyle(
-                        fontSize: 12,
+                        fontSize: 8,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
