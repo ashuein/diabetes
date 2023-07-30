@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PhysicalActivityLog extends StatelessWidget {
-  Future<List<ActivityEntry>> fetchBloodSugarData(phoneNumber) async {
+  Future<List<ActivityEntry>> fetchActivityData(phoneNumber) async {
     final response = await http.get(Uri.parse('http://10.0.2.2:5000/activity_records/$phoneNumber'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
@@ -42,7 +42,7 @@ class PhysicalActivityLog extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: FutureBuilder<List<ActivityEntry>>(
-          future: fetchBloodSugarData(context.read<UserProvider>().phoneNumber),
+          future: fetchActivityData(context.read<UserProvider>().phoneNumber),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());

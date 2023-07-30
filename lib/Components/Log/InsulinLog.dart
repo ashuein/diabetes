@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class InsulinLog extends StatelessWidget {
-  Future<List<InsulinEntry>> fetchBloodSugarData(phoneNumber) async {
+  Future<List<InsulinEntry>> fetchInsulinData(phoneNumber) async {
     final response = await http.get(Uri.parse('http://10.0.2.2:5000/insulin_records/$phoneNumber'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
@@ -43,7 +43,7 @@ class InsulinLog extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: FutureBuilder<List<InsulinEntry>>(
-          future: fetchBloodSugarData(context.read<UserProvider>().phoneNumber),
+          future: fetchInsulinData(context.read<UserProvider>().phoneNumber),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
