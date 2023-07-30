@@ -40,18 +40,18 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffF2F2F2),
+      backgroundColor: const Color(0xffF2F2F2),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: IconThemeData(color: Color(0xff6373CC)),
+        iconTheme: const IconThemeData(color: Color(0xff6373CC)),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               "Blood Sugar Statistics",
               style: GoogleFonts.inter(
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Color(0xff6373CC),
@@ -59,7 +59,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
               ),
             ),
             IconButton(
-              icon: Icon(Icons.info_outlined),
+              icon: const Icon(Icons.info_outlined),
               onPressed: () => showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -72,14 +72,14 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
       ),
       body: Center(
         child: Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: bloodSugarData.isNotEmpty
               ? buildBloodSugarGraph()
-              : CircularProgressIndicator(),
+              : const CircularProgressIndicator(),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xff6373CC),
+        backgroundColor: const Color(0xff6373CC),
         onPressed: () {
           // Show the dialog box with three blocks of colors and text
           Navigator.push(
@@ -89,7 +89,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
             ),
           );
         },
-        child: Icon(Icons.book),
+        child: const Icon(Icons.book),
       ),
     );
   }
@@ -113,31 +113,31 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
     chartData.sort((a, b) => a.dateTime.compareTo(b.dateTime));
 
     return SfCartesianChart(
-      plotAreaBorderColor: Color(0xffF2F2F2),
+      plotAreaBorderColor: const Color(0xffF2F2F2),
       primaryXAxis: CategoryAxis(
-        labelStyle: TextStyle(fontSize: 0),
-        majorGridLines: MajorGridLines(width: 0), // Hide major grid lines
-        minorGridLines: MinorGridLines(width: 0),
+        labelStyle: const TextStyle(fontSize: 0),
+        majorGridLines: const MajorGridLines(width: 0), // Hide major grid lines
+        minorGridLines: const MinorGridLines(width: 0),
         visibleMinimum: chartData.length >= 5 ? chartData.length - 5 : 0,
-        majorTickLines: MajorTickLines(size: 0), // Hide major tick lines
+        majorTickLines: const MajorTickLines(size: 0), // Hide major tick lines
         edgeLabelPlacement:
             EdgeLabelPlacement.shift, // Shift the labels to avoid overlap
-        axisLine: AxisLine(width: 2, color: Color(0xff6373CC)),
+        axisLine: const AxisLine(width: 2, color: Color(0xff6373CC)),
       ),
       primaryYAxis: NumericAxis(
         title: AxisTitle(text: "Blood Sugar",textStyle: GoogleFonts.inter(
-          textStyle: TextStyle(
+          textStyle: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Color(0xff6373CC),
           ),
         ),),
-        majorGridLines: MajorGridLines(width: 0), // Hide major grid lines
-        minorGridLines: MinorGridLines(width: 0),
-        majorTickLines: MajorTickLines(size: 0), // Hide major tick lines
+        majorGridLines: const MajorGridLines(width: 0), // Hide major grid lines
+        minorGridLines: const MinorGridLines(width: 0),
+        majorTickLines: const MajorTickLines(size: 0), // Hide major tick lines
         edgeLabelPlacement:
             EdgeLabelPlacement.shift, // Shift the labels to avoid overlap
-        axisLine: AxisLine(width: 2,color: Color(0xff6373CC)),
+        axisLine: const AxisLine(width: 2,color: Color(0xff6373CC)),
         minimum: 0,
         maximum:
             250, // Set the max Y value as needed based on your blood sugar data
@@ -151,7 +151,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
       tooltipBehavior: TooltipBehavior(
         enable: true,
       ),
-      legend: Legend(
+      legend: const Legend(
         // Add the Legend widget here
         isVisible: true,
         position: LegendPosition.bottom,
@@ -187,28 +187,28 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
                 }
 
                 return Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: Boxcolor,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
                   child: Text(
                     customLabel,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         fontSize: 8,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                   ),
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: Boxcolor,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
                 );
               }
               return Container();
             },
           ),
-          markerSettings: MarkerSettings(
+          markerSettings: const MarkerSettings(
             isVisible: true,
             // You can customize the marker shape, size, and color here
             shape: DataMarkerType.circle,

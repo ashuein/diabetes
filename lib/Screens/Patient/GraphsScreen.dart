@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../Components/Graphs/BloodSugarGraph.dart';
 import '../../Components/Graphs/InuslinGraph.dart';
+import '../../Components/Log/PhysicalActivityLog.dart';
 import '../../Components/RectangleButton.dart';
 
 class GraphScreen extends StatefulWidget {
@@ -102,7 +103,7 @@ class _GraphScreenState extends State<GraphScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => BloodSugarGraph(),
+                                  builder: (context) => PhysicalActivityLog(),
                                 ),
                               );
                             },
