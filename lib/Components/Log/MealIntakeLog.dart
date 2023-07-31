@@ -10,7 +10,9 @@ import 'package:provider/provider.dart';
 import '../../Providers/UserInfo.dart';
 
 class MealIntakeLog extends StatefulWidget {
-  const MealIntakeLog({super.key});
+
+  final String patientNumber; // Using the "?" makes it optional
+  MealIntakeLog({required this.patientNumber});
 
   @override
   State<MealIntakeLog> createState() => _MealIntakeLogState();
@@ -22,7 +24,6 @@ class _MealIntakeLogState extends State<MealIntakeLog> {
     final response = await http.get(Uri.parse('http://10.0.2.2:5000/get_mealIntake/$phoneNumber'));
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
-      print(responseData);
       return responseData.asMap().map((index, entry) {
         return MapEntry(
           index,
@@ -85,7 +86,7 @@ class _MealIntakeLogState extends State<MealIntakeLog> {
 
   Future<void> _fetchAndShowImage(date,time) async {
     // Replace this with your API endpoint to fetch the image URL based on mealId
-    var phoneNumber = context.read<UserProvider>().phoneNumber;
+    var phoneNumber = widget.patientNumber;
     String apiUrl = 'http://10.0.2.2:5000/get_foodpic/$date/$time/$phoneNumber';
 
     try {
@@ -93,7 +94,8 @@ class _MealIntakeLogState extends State<MealIntakeLog> {
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = json.decode(response.body);
         print(responseData);
-        String base64Image = responseData['foodpic'];
+        String base64Image = await responseData['foodpic'];
+        print("Here!!!");
         _showImageDialog(context, base64Image,date,time);
       } else {
         // Handle error cases, such as non-200 response status
@@ -122,7 +124,7 @@ class _MealIntakeLogState extends State<MealIntakeLog> {
         ),),
       ),
       body: FutureBuilder<List<MealIntakeEntry>>(
-        future: fetchMealData(context.read<UserProvider>().phoneNumber),
+        future: fetchMealData(widget.patientNumber),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());

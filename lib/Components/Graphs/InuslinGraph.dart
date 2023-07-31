@@ -11,6 +11,10 @@ import '../ColorBlockDialog.dart';
 import '../Log/InsulinLog.dart';
 
 class InsulinGraph extends StatefulWidget {
+
+  final String patientNumber;
+  InsulinGraph({required this.patientNumber});
+
   @override
   _InsulinGraphState createState() => _InsulinGraphState();
 }
@@ -21,7 +25,7 @@ class _InsulinGraphState extends State<InsulinGraph> {
   @override
   void initState() {
     super.initState();
-    fetchData(context.read<UserProvider>().phoneNumber);
+    fetchData(widget.patientNumber);
   }
 
   Future<void> fetchData(phoneNumber) async {
@@ -86,7 +90,7 @@ class _InsulinGraphState extends State<InsulinGraph> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => InsulinLog(),
+              builder: (context) => InsulinLog(patientNumber: widget.patientNumber,),
             ),
           );
         },

@@ -10,6 +10,10 @@ import 'package:provider/provider.dart';
 import '../Forms/BloodReportLog.dart';
 
 class BloodReport extends StatefulWidget {
+
+  final String patientNumber; // Using the "?" makes it optional
+  BloodReport({required this.patientNumber});
+
   @override
   State<BloodReport> createState() => _BloodReportState();
 }
@@ -55,7 +59,7 @@ class _BloodReportState extends State<BloodReport> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: IconThemeData(color:Color(0xffF86851)),
-        title: Text('Physical Activity Logs',style: GoogleFonts.inter(
+        title: Text('Blood Reports Logs',style: GoogleFonts.inter(
           textStyle: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -66,7 +70,7 @@ class _BloodReportState extends State<BloodReport> {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: FutureBuilder<List<ReportEntry>>(
-          future: fetchReportData(context.read<UserProvider>().phoneNumber),
+          future: fetchReportData(widget.patientNumber),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());

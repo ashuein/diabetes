@@ -7,6 +7,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PhysicalActivityLog extends StatelessWidget {
+
+  final String patientNumber; // Using the "?" makes it optional
+  PhysicalActivityLog({required this.patientNumber});
+
   Future<List<ActivityEntry>> fetchActivityData(phoneNumber) async {
     final response = await http.get(Uri.parse('http://10.0.2.2:5000/activity_records/$phoneNumber'));
     if (response.statusCode == 200) {
@@ -42,7 +46,7 @@ class PhysicalActivityLog extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: FutureBuilder<List<ActivityEntry>>(
-          future: fetchActivityData(context.read<UserProvider>().phoneNumber),
+          future: fetchActivityData(patientNumber),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());

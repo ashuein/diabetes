@@ -1,8 +1,6 @@
-import 'package:diabetes_ms/Providers/UserInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'dart:convert';
 import '../../Components/Graphs/BloodSugarGraph.dart';
 import '../../Components/Graphs/InuslinGraph.dart';
@@ -11,14 +9,16 @@ import '../../Components/Log/MealIntakeLog.dart';
 import '../../Components/Log/PhysicalActivityLog.dart';
 import '../../Components/RectangleButton.dart';
 
-class GraphScreen extends StatefulWidget {
-  const GraphScreen({super.key});
+class GraphScreenD extends StatefulWidget {
+
+  final String patientNumber;
+  GraphScreenD({super.key,required this.patientNumber});
 
   @override
-  State<GraphScreen> createState() => _GraphScreenState();
+  State<GraphScreenD> createState() => _GraphScreenDState();
 }
 
-class _GraphScreenState extends State<GraphScreen> {
+class _GraphScreenDState extends State<GraphScreenD> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +64,7 @@ class _GraphScreenState extends State<GraphScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => BloodSugarGraph(patientNumber: context.read<UserProvider>().phoneNumber ?? ""),
+                                  builder: (context) => BloodSugarGraph(patientNumber: widget.patientNumber,),
                                 ),
                               );
                             },
@@ -78,7 +78,7 @@ class _GraphScreenState extends State<GraphScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => InsulinGraph(patientNumber: context.read<UserProvider>().phoneNumber ?? ""),
+                                  builder: (context) => InsulinGraph(patientNumber: widget.patientNumber,),
                                 ),
                               );
                             },
@@ -94,7 +94,7 @@ class _GraphScreenState extends State<GraphScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => MealIntakeLog(patientNumber: context.read<UserProvider>().phoneNumber ?? ""),
+                                  builder: (context) => MealIntakeLog(patientNumber: widget.patientNumber),
                                 ),
                               );
                             },
@@ -107,7 +107,7 @@ class _GraphScreenState extends State<GraphScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => PhysicalActivityLog(patientNumber: context.read<UserProvider>().phoneNumber ?? ""),
+                                  builder: (context) => PhysicalActivityLog(patientNumber: widget.patientNumber),
                                 ),
                               );
                             },
@@ -123,7 +123,7 @@ class _GraphScreenState extends State<GraphScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => BloodReport(patientNumber: context.read<UserProvider>().phoneNumber ?? ""),
+                                  builder: (context) => BloodReport(patientNumber: widget.patientNumber),
                                 ),
                               );
                             },

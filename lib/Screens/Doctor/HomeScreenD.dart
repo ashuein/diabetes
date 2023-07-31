@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'DoctorGraphScreen.dart';
+
 class HomeScreenD extends StatefulWidget {
   const HomeScreenD({super.key});
 
@@ -160,6 +162,14 @@ class _HomeScreenDState extends State<HomeScreenD> {
                     itemBuilder: (context, index) {
                       final patient = patients[index];
                       return ListTile(
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>GraphScreenD(patientNumber: patient['phoneNumber'],),
+                            ),
+                          );
+                        },
                         title: Text(patient['name']),
                         subtitle: Text(
                             'Age: ${patient['age']}, Gender: ${patient['gender']}'),

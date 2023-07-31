@@ -10,6 +10,10 @@ import '../ColorBlockDialog.dart';
 import '../Log/BloodSugarLogs.dart';
 
 class BloodSugarGraph extends StatefulWidget {
+
+  final String patientNumber; // Using the "?" makes it optional
+  BloodSugarGraph({required this.patientNumber});
+
   @override
   _BloodSugarGraphState createState() => _BloodSugarGraphState();
 }
@@ -20,7 +24,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
   @override
   void initState() {
     super.initState();
-    fetchData(context.read<UserProvider>().phoneNumber);
+    fetchData(widget.patientNumber);
   }
 
   Future<void> fetchData(phoneNumber) async {
@@ -85,7 +89,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => BloodSugarLog(),
+              builder: (context) => BloodSugarLog(patientNumber: widget.patientNumber,),
             ),
           );
         },

@@ -7,6 +7,11 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class BloodSugarLog extends StatelessWidget {
+
+  final String patientNumber; // Using the "?" makes it optional
+  BloodSugarLog({required this.patientNumber});
+
+
   Future<List<BloodSugarEntry>> fetchBloodSugarData(phoneNumber) async {
     final response = await http.get(Uri.parse('http://10.0.2.2:5000/blood_sugar_records/$phoneNumber'));
     if (response.statusCode == 200) {
@@ -42,7 +47,7 @@ class BloodSugarLog extends StatelessWidget {
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: FutureBuilder<List<BloodSugarEntry>>(
-            future: fetchBloodSugarData(context.read<UserProvider>().phoneNumber),
+            future: fetchBloodSugarData(patientNumber),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
