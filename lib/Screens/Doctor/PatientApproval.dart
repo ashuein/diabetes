@@ -190,24 +190,57 @@ class _ApprovalState extends State<Approval> {
                         print('Wrong icon clicked for phone number: $phoneNumber');
                       }
 
-                      return ListTile(
-                        title: Text(patient['name']),
-                        subtitle: Text(
-                            'Age: ${patient['age']}, Gender: ${patient['gender']}'),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              onPressed: onCorrectIconClick,
-                              icon: Icon(Icons.check, color: Colors.green),
+                      return Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: ListTile(
+                          title: Text(
+                            patient['name'],
+                            style: GoogleFonts.inter(
+                              textStyle: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xffF86851),
+                              ),
                             ),
-                            IconButton(
-                              onPressed: onWrongIconClick,
-                              icon: Icon(Icons.close, color: Colors.red),
-                            ),
-                          ],
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Phone No.: ${patient['phoneNumber']}',
+                                style: GoogleFonts.inter(
+                                  textStyle: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                'Gender: ${patient['gender']}',
+                                style: GoogleFonts.inter(
+                                  textStyle: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                onPressed: onCorrectIconClick,
+                                icon: Icon(Icons.check, color: Colors.green,size: 30,),
+                              ),
+                              IconButton(
+                                onPressed: onWrongIconClick,
+                                icon: Icon(Icons.close, color: Colors.red,size: 30,),
+                              ),
+                            ],
+                          ),
+                          // Add more patient details to display in the list as needed
                         ),
-                        // Add more patient details to display in the list as needed
                       );
                     },
                   );

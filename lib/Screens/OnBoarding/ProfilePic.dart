@@ -20,6 +20,7 @@ class _ProfilePicState extends State<ProfilePic> {
   late SharedPreferences prefs;
   late String profilePicturePath;
 
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +59,9 @@ class _ProfilePicState extends State<ProfilePic> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isProfilePictureSelected = context.watch<UserProvider>().imageFile != null;
+
     return Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -87,15 +91,12 @@ class _ProfilePicState extends State<ProfilePic> {
                         if (imageProvider.imageFile == null) {
                           return const CircleAvatar(
                             radius: 150,
-                            backgroundImage: AssetImage(
-                                'assets/images/default_profile_pic.png'),
+                            backgroundImage: AssetImage('assets/images/default_profile_pic.png'),
                           );
                         } else {
                           return CircleAvatar(
                               radius: 150,
-                              backgroundImage:
-                                  FileImage(imageProvider.imageFile!)
-                                      as ImageProvider);
+                              backgroundImage: FileImage(imageProvider.imageFile!) as ImageProvider);
                         }
                       },
                     ),
@@ -142,14 +143,16 @@ class _ProfilePicState extends State<ProfilePic> {
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {
+              onPressed: isProfilePictureSelected
+                  ? () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => SelectYourDoctor(),
                   ),
                 );
-              },
+              }
+              : null,
               style: ElevatedButton.styleFrom(
                 textStyle:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -161,30 +164,6 @@ class _ProfilePicState extends State<ProfilePic> {
                 backgroundColor: Color(0xff6373CC),
               ),
               child: const Text('Set Profile Picture'),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SelectYourDoctor(),
-                    ),
-                  );
-                },
-                child:Text(
-                  'Skip',
-                  textAlign: TextAlign.right,
-                  style: GoogleFonts.inter(
-                    color: Color(0xffF86851),
-                    textStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ),
             ),
           ],
         ),

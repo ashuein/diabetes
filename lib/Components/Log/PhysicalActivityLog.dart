@@ -79,6 +79,7 @@ class PhysicalActivityLog extends StatelessWidget {
                       ),
                     ),),
                     subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: entries.map((entry) {
                         String formattedTime = DateFormat('HH:mm').format(entry.time);
                         return Padding(

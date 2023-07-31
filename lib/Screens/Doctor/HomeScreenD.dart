@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'DoctorGraphScreen.dart';
 
 class HomeScreenD extends StatefulWidget {
@@ -19,6 +18,8 @@ class HomeScreenD extends StatefulWidget {
 class _HomeScreenDState extends State<HomeScreenD> {
   List<Map<String, dynamic>> _patients = [];
   late String doctorId = '';
+  TextEditingController _searchController = TextEditingController();
+
 
   @override
   void initState() {
@@ -146,41 +147,122 @@ class _HomeScreenDState extends State<HomeScreenD> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: _fetchPatientsData(doctorId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No patients data found'));
-                } else {
-                  final patients = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: patients.length,
-                    itemBuilder: (context, index) {
-                      final patient = patients[index];
-                      return ListTile(
-                        onTap: (){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>GraphScreenD(patientNumber: patient['phoneNumber'],),
-                            ),
-                          );
-                        },
-                        title: Text(patient['name']),
-                        subtitle: Text(
-                            'Age: ${patient['age']}, Gender: ${patient['gender']}'),
-                        // Add more patient details to display in the list as needed
-                      );
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0,right: 15.0,top: 15.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Search Patients...',
+                      hintStyle: GoogleFonts.inter(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          color: const Color(0xff6A696E).withOpacity(0.5)),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Color(0xffF86851),
+                        ),
+                        borderRadius:
+                        BorderRadius.circular(10.0), // Border radius
+                      ),
+                      suffixIcon:Icon(Icons.search),
+                    ),
+                    controller: _searchController,
+                    onChanged: (value) {
+                      setState(() {}); // To trigger a re-render and apply the filter
                     },
-                  );
-                }
-              },
+                  ),
+                ),
+                Expanded(
+                  child: FutureBuilder<List<Map<String, dynamic>>>(
+                    future: _fetchPatientsData(doctorId),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Center(child: Text('No patients data found'));
+                      } else {
+                        final patients = snapshot.data!;
+                        List<Map<String, dynamic>> filteredPatients = patients.where((patient) {
+                          String name = patient['name'].toString().toLowerCase();
+                          String phoneNumber = patient['phoneNumber'].toString().toLowerCase();
+                          String gender = patient['gender'].toString().toLowerCase();
+                          String searchTerm = _searchController.text.toLowerCase();
+                          return name.contains(searchTerm) ||
+                              phoneNumber.contains(searchTerm) ||
+                              gender.contains(searchTerm);
+                        }).toList();
+                        return ListView.builder(
+                          itemCount: filteredPatients.length,
+                          itemBuilder: (context, index) {
+                            final patient = filteredPatients[index];
+                            return Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Container(
+                                  padding: EdgeInsets.all(20.0),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey), // Add border around the ListTile
+                                  borderRadius: BorderRadius.circular(8.0), // Optionally, add border radius
+                                ),
+                                child: ListTile(
+                                  onTap: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => GraphScreenD(patientNumber: patient['phoneNumber'],),
+                                      ),
+                                    );
+                                  },
+                                  title: Text(
+                                    patient['name'],
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.inter(
+                                      textStyle: TextStyle(
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xffF86851),
+                                      ),
+                                    ),
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Phone No.: ${patient['phoneNumber']}',
+                                        style: GoogleFonts.inter(
+                                          textStyle: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        'Gender: ${patient['gender']}',
+                                        style: GoogleFonts.inter(
+                                          textStyle: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  // Add more patient details to display in the list as needed
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
+
         ],
       ),
     );
