@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../../Providers/UserInfo.dart';
 
 class MealIntakeEntryBottomSheet extends StatefulWidget {
@@ -17,7 +18,8 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
 
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
-  String mealType = 'Light'; // Assuming 'Before' is the default value
+  String mealType = 'Light';
+  File? imageFile;
 
   void _onMealSelected(String type) {
     setState(() {
@@ -32,6 +34,18 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
     final format =
         DateFormat.jm(); // You can customize the time format here if needed.
     return format.format(dateTime);
+  }
+
+  Future<void> _pickProfilePicture() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedImage != null) {
+      setState(() {
+        String imagePath = pickedImage.path;
+        imageFile = File(imagePath);
+      });
+    }
   }
 
   @override
@@ -60,12 +74,38 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        imageFile != null ? Image.file(
+                          imageFile!,
+                          width: 100, // Set a suitable width for the displayed image
+                          height: 50, // Set a suitable height for the displayed image
+                          fit: BoxFit.cover, // Choose the appropriate fit for the image
+                        ) : Text("Add a Picture"),
+                        ElevatedButton(
+                          onPressed: () {
+                            _pickProfilePicture();
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xffF86851),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              minimumSize: Size(100, 50)),
+                          child: Icon(Icons.camera_alt),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     Text('Select Meal Intake:'),
                     SizedBox(
                       height: 10,
@@ -201,19 +241,22 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
   Future<void> saveMealIntakeEntry() async {
     // TO:DO WHAT IF NULL
 
+    if (imageFile == null) {
+      print('Please add a picture before saving.');
+      return;
+    }
+
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     String timeStr = selectedTime.format(context);
-
-    // print(mealType);
-    // print(bloodSugarController.text);
-    // print(dateStr);
-    // print(timeStr);
+    List<int> imageBytes = await imageFile!.readAsBytes(); // Perform null check here
+    String base64Image = base64Encode(imageBytes);
 
     final data = {
       'selectedDate': dateStr,
       'selectedTime': timeStr,
       'mealType': mealType,
-      'phoneNumber': context.read<UserProvider>().phoneNumber
+      'phoneNumber': context.read<UserProvider>().phoneNumber,
+      'foodpic' : base64Image,
     };
 
     final url = 'http://10.0.2.2:5000/save_mealIntake';

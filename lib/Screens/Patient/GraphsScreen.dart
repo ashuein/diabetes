@@ -5,6 +5,7 @@ import 'dart:convert';
 import '../../Components/Graphs/BloodSugarGraph.dart';
 import '../../Components/Graphs/InuslinGraph.dart';
 import '../../Components/Log/BloodReport.dart';
+import '../../Components/Log/MealIntakeLog.dart';
 import '../../Components/Log/PhysicalActivityLog.dart';
 import '../../Components/RectangleButton.dart';
 
@@ -91,7 +92,7 @@ class _GraphScreenState extends State<GraphScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => BloodSugarGraph(),
+                                  builder: (context) => MealIntakeLog(),
                                 ),
                               );
                             },
