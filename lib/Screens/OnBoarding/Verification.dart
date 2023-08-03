@@ -63,10 +63,31 @@ class _VerificationState extends State<Verification> {
   }
 
   Future<void> VerifyOtp(otp) async {
-    if (_responseMessage == otp || otp == '1234') {
+    print("Working");
+    if (otp == _responseMessage || otp == '1234' && isDoctor == false) {
+      print("Working1");
       setState(() {
         isVerified = true;
       });
+    } else{
+      print("Working2");
+      final digits = widget.mobileNumber;
+      final response = await http.get(Uri.parse('http://10.0.2.2:5000/get_doctors_by_number/$digits'));
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        var generated_otp = jsonData['otp'];
+        print(generated_otp);
+
+        if(generated_otp == otp){
+          setState(() {
+            isVerified = true;
+          });
+        }
+
+      } else {
+        throw Exception('Failed to load doctors data');
+      }
     }
     if (isVerified == true) {
       context.read<UserProvider>().setPhoneNumber(widget.mobileNumber);
@@ -81,12 +102,6 @@ class _VerificationState extends State<Verification> {
     }
   }
 
-  bool otpValidator(otp) {
-    if (otp == _responseMessage || otp == '1234') {
-      return true;
-    }
-    return false;
-  }
 
   Future<void> checkDoctor(mobileNumber) async {
     final url = 'http://10.0.2.2:5000/check_number';
@@ -209,9 +224,6 @@ class _VerificationState extends State<Verification> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your otp';
-                            }
-                            if (!otpValidator(value)) {
-                              return "Invalid Code";
                             }
                             return null;
                           },
