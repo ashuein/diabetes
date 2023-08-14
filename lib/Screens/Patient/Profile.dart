@@ -117,8 +117,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         statusText = "Rejected";
                         break;
                       default:
-                        textColor = Colors.black; // Default color
-                        statusText = "Unknown";
+                        textColor = Colors.yellow; // Default color
+                        statusText = "Pending";
                     }
 
                     return Container(

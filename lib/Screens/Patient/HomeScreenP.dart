@@ -19,6 +19,7 @@ import '../../Components/Forms/Activity.dart';
 import '../../Components/Forms/BloodGlucose.dart';
 import 'ChangeProfilePic.dart';
 import 'GraphsScreen.dart';
+import 'cal.dart';
 
 class HomeScreenP extends StatefulWidget {
   const HomeScreenP({super.key});
@@ -330,22 +331,24 @@ class _HomeScreenPState extends State<HomeScreenP> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Ideal Insulin Intake",
-                                    style: GoogleFonts.inter(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "40 units of insulin/day",
-                                    style: GoogleFonts.inter(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff6373CC),
+                                  GestureDetector(
+                                    onTap : (){
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => Cal()),
+                                      );
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "Calculate Insulin\nIntake  >",
+                                          style: GoogleFonts.inter(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color:Color(0xff6373CC),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],

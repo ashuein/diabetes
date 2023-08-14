@@ -31,7 +31,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
     return base64Image;
   }
 
-  void addUser() async {
+  Future<void> addUser() async {
 
     var name = context.read<UserProvider>().name;
     var phoneNumber = context.read<UserProvider>().phoneNumber;
@@ -118,10 +118,10 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
                           email: doctor['email'],
                           hospitalName: doctor['hospitalName'],
                           city: doctor['city'],
-                          onTap: () {
+                          onTap: () async {
                             // Add your onTap functionality here
                             context.read<UserProvider>().setDoctorid(doctor['email']);
-                            addUser();
+                            await addUser();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
