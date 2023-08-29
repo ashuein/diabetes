@@ -25,12 +25,14 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
     fetchData();
   }
 
+  // Convert image to base64 format
   String imageToBase64(File imageFile) {
     List<int> imageBytes = imageFile.readAsBytesSync();
     String base64Image = base64Encode(imageBytes);
     return base64Image;
   }
 
+  // Function to add user data to the server
   Future<void> addUser() async {
 
     var name = context.read<UserProvider>().name;
@@ -73,6 +75,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
     }
   }
 
+  // Fetch list of doctors from the server
   void fetchData() async {
     final response = await http.get(Uri.parse('http://10.0.2.2:5000/get_doctors'));
     if (response.statusCode == 200) {
@@ -143,6 +146,8 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
   }
 }
 
+
+// Widget for displaying doctor information
 class DoctorCard extends StatelessWidget {
   final String name;
   final String email;

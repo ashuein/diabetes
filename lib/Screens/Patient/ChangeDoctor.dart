@@ -23,21 +23,21 @@ class _ChangeYourDoctorState extends State<ChangeYourDoctor> {
   @override
   void initState() {
     super.initState();
-    fetchData();
+    fetchData(); // Fetch doctor data when the widget is created
   }
 
+  // Edit the selected doctor for the current user
   void EditDoctor() async {
-
+    // Get user's phone number and doctor's email from context
     var phoneNumber = context.read<UserProvider>().phoneNumber;
     var email = context.read<UserProvider>().doctorid;
-
-    print(phoneNumber);
 
     final data = {
       "phoneNumber": phoneNumber,
       "doctorid": email,
     };
 
+    // Send a POST request to edit the doctor for the user
     final response = await http.post(
       Uri.parse('http://10.0.2.2:5000/edit_doctor'),
       headers: {'Content-Type': 'application/json'},
@@ -50,6 +50,7 @@ class _ChangeYourDoctorState extends State<ChangeYourDoctor> {
     }
   }
 
+  // Fetch available doctors from the server
   void fetchData() async {
     final response = await http.get(Uri.parse('http://10.0.2.2:5000/get_doctors'));
     if (response.statusCode == 200) {
@@ -96,9 +97,11 @@ class _ChangeYourDoctorState extends State<ChangeYourDoctor> {
                           hospitalName: doctor['hospitalName'],
                           city: doctor['city'],
                           onTap: () {
-                            // Add your onTap functionality here
+                            // Set the selected doctor's email in the provider
                             context.read<UserProvider>().setDoctorid(doctor['email']);
+                            // Edit the doctor for the user
                             EditDoctor();
+                            // Navigate to the patient's home screen
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -119,4 +122,3 @@ class _ChangeYourDoctorState extends State<ChangeYourDoctor> {
     );
   }
 }
-

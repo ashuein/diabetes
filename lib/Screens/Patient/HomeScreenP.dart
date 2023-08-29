@@ -48,6 +48,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
     _loadProgress();
   }
 
+  // Function to mark onboarding as completed
   Future<void> OnBoaringCompleted() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboardingCompleted', true);
@@ -56,6 +57,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
   }
 
 
+  // Convert base64 string to File
   File base64ToFile(String base64String) {
     Uint8List bytes = base64Decode(base64String);
     String tempPath = Directory.systemTemp.path;
@@ -65,7 +67,11 @@ class _HomeScreenPState extends State<HomeScreenP> {
     return file;
   }
 
+  // Fetch user data from the server
   Future<void> fetchUserData(phoneNumber) async {
+
+    // Make a GET request to fetch user data
+    // Set Provider values based on fetched data
     final url = 'http://10.0.2.2:5000/get_users/$phoneNumber';
 
     try {
@@ -91,6 +97,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
     }
   }
 
+  // Open various entry dialogs
   void openBloodSugarEntryDialog() {
     showModalBottomSheet(
       context: context,
@@ -102,6 +109,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
       },
     );
   }
+
 
   void openInsulinEntryDialog() {
     showModalBottomSheet(
@@ -152,6 +160,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
     );
   }
 
+  // Load user progress from shared preferences
   Future<void> _loadProgress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     double currentProgress = prefs.getDouble('userProgress') ?? 0;
@@ -169,6 +178,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
     });
   }
 
+  // Update user progress and store in shared preferences
   Future<void> _updateProgress() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     double updatedProgress = _progress + 1;

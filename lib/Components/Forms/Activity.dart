@@ -17,7 +17,7 @@ class _ActivityEntryBottomSheetState extends State<ActivityEntryBottomSheet> {
 
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
-  String activityType = 'Light'; // Assuming 'Before' is the default value
+  String activityType = 'Light'; // Assuming 'Light' is the default value
 
   void _onMealSelected(String type) {
     setState(() {

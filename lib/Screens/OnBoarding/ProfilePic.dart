@@ -36,6 +36,7 @@ class _ProfilePicState extends State<ProfilePic> {
     }
   }
 
+  // Function to pick and set profile picture
   Future<void> _pickProfilePicture() async {
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: ImageSource.gallery);

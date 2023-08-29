@@ -27,6 +27,7 @@ class _ChnageProfilePicState extends State<ChnageProfilePic> {
     super.initState();
   }
 
+  // Update profile picture by sending image to the server
   Future<void> updateProfilePicture(File imageFile, String phoneNumber) async {
     try {
       final url = 'http://10.0.2.2:5000/update_profile'; // Replace with your API endpoint
@@ -57,6 +58,7 @@ class _ChnageProfilePicState extends State<ChnageProfilePic> {
     }
   }
 
+  // Pick profile picture from gallery
   Future<void> _pickProfilePicture() async {
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: ImageSource.gallery);

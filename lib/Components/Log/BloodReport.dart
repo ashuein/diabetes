@@ -18,6 +18,8 @@ class BloodReport extends StatefulWidget {
 }
 
 class _BloodReportState extends State<BloodReport> {
+
+
   Future<List<ReportEntry>> fetchReportData(phoneNumber) async {
     final response = await http.get(Uri.parse('http://10.0.2.2:5000/blood_reports/$phoneNumber'));
     if (response.statusCode == 200) {

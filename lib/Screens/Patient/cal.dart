@@ -41,9 +41,10 @@ class _CalState extends State<Cal> {
   @override
   void initState() {
     super.initState();
-    _loadSavedValues();
+    _loadSavedValues(); // Load saved values when the widget is created
   }
 
+  // Load saved values from SharedPreferences
   Future<void> _loadSavedValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -61,6 +62,8 @@ class _CalState extends State<Cal> {
     });
   }
 
+
+  // Save input values to SharedPreferences
   Future<void> _saveValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (icfController.text.isNotEmpty)

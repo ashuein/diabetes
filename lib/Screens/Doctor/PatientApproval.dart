@@ -17,6 +17,8 @@ class Approval extends StatefulWidget {
 }
 
 class _ApprovalState extends State<Approval> {
+
+  // List of pending patients
   List<Map<String, dynamic>> _patients = [];
   late String doctorId = '';
 
@@ -26,6 +28,7 @@ class _ApprovalState extends State<Approval> {
     OnBoaringCompleted();
   }
 
+  // Function to mark onboarding as completed and fetch user data
   Future<void> OnBoaringCompleted() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboardingCompleted', true);
@@ -33,6 +36,7 @@ class _ApprovalState extends State<Approval> {
     fetchUserData(phoneNumber);
   }
 
+  // Function to fetch user data from the server
   Future<void> fetchUserData(phoneNumber) async {
     final url = 'http://10.0.2.2:5000/get_doctors_by_number/$phoneNumber';
     try {
@@ -46,6 +50,7 @@ class _ApprovalState extends State<Approval> {
     }
   }
 
+  // Function to fetch pending patients data for the doctor
   Future<List<Map<String, dynamic>>> _fetchPatientsData(doctorId) async {
     final url = 'http://10.0.2.2:5000/pending_patients/$doctorId';
     final response = await http.get(Uri.parse(url));

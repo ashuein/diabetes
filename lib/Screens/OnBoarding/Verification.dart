@@ -27,6 +27,8 @@ class _VerificationState extends State<Verification> {
   bool alreadyP = false;
   late String otp, _responseMessage = '';
 
+
+  // Send OTP request to the server
   Future<void> SendOTP(mobileNumber) async {
     final apiUrl = 'http://10.0.2.2:5000/generateOtp'; // Replace with your Flask server IP
 
@@ -62,6 +64,7 @@ class _VerificationState extends State<Verification> {
     }
   }
 
+  // Verify the OTP entered by the user
   Future<void> VerifyOtp(otp) async {
     print("Working");
     if (otp == _responseMessage || otp == '1234' && isDoctor == false) {
@@ -102,7 +105,7 @@ class _VerificationState extends State<Verification> {
     }
   }
 
-
+  // Check if the mobile number belongs to a doctor
   Future<void> checkDoctor(mobileNumber) async {
     final url = 'http://10.0.2.2:5000/check_number';
     final headers = {'Content-Type': 'application/json'};
@@ -122,6 +125,7 @@ class _VerificationState extends State<Verification> {
     }
   }
 
+  // Check if the user is logging in for the first time
   Future<void> checkFirstTime(mobileNumber) async {
     final url = 'http://10.0.2.2:5000/check_number_first_time';
     final headers = {'Content-Type': 'application/json'};

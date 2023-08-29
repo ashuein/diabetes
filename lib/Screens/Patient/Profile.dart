@@ -103,6 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Color textColor;
                     String statusText;
 
+                    // Determine the text color and status text based on user's status
                     switch (userProvider.status) {
                       case 0:
                         textColor = Colors.yellow; // Pending - Yellow color

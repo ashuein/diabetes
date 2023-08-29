@@ -16,6 +16,8 @@ class HomeScreenD extends StatefulWidget {
 }
 
 class _HomeScreenDState extends State<HomeScreenD> {
+
+  // List of patients retrieved from the server
   List<Map<String, dynamic>> _patients = [];
   late String doctorId = '';
   TextEditingController _searchController = TextEditingController();
@@ -27,6 +29,7 @@ class _HomeScreenDState extends State<HomeScreenD> {
     OnBoaringCompleted();
   }
 
+  // Function to mark onboarding as completed and fetch user data
   Future<void> OnBoaringCompleted() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboardingCompleted', true);
@@ -34,6 +37,7 @@ class _HomeScreenDState extends State<HomeScreenD> {
     fetchUserData(phoneNumber);
   }
 
+  // Function to fetch user data from the server
   Future<void> fetchUserData(phoneNumber) async {
     final url = 'http://10.0.2.2:5000/get_doctors_by_number/$phoneNumber';
     try {
@@ -47,6 +51,7 @@ class _HomeScreenDState extends State<HomeScreenD> {
     }
   }
 
+  // Function to fetch patients data for the doctor
   Future<List<Map<String, dynamic>>> _fetchPatientsData(doctorId) async {
     final url = 'http://10.0.2.2:5000/approved_patients/$doctorId';
     final response = await http.get(Uri.parse(url));
