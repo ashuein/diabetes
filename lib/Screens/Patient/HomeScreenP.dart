@@ -89,8 +89,8 @@ class _HomeScreenPState extends State<HomeScreenP> {
       context.read<UserProvider>().setDoctorid(data['doctorid']);
       context.read<UserProvider>().setStatus(data['status']);
 
-      File profilePicFile = base64ToFile(data['profilepic']);
-      context.read<UserProvider>().setImageFile(profilePicFile);
+      // File profilePicFile = base64ToFile(data['profilepic']);
+      // context.read<UserProvider>().setImageFile(profilePicFile);
 
     } catch (error) {
       print(error);
@@ -228,7 +228,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.inter(
                                     textStyle: TextStyle(
-                                      fontSize: 28,
+                                      fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                       color: Color(0xff6373CC),
                                     ),
@@ -262,23 +262,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
                           ),
                         );
                       },
-                      child: Consumer<UserProvider>(
-                        builder: (context, imageProvider, _) {
-                          if (imageProvider.imageFile == null) {
-                            return const CircleAvatar(
-                              radius: 32,
-                              backgroundImage: AssetImage(
-                                  'assets/images/default_profile_pic.png'),
-                            );
-                          } else {
-                            return CircleAvatar(
-                                radius: 32,
-                                backgroundImage:
-                                    FileImage(imageProvider.imageFile!)
-                                        as ImageProvider);
-                          }
-                        },
-                      ),
+                      child: Icon(Icons.settings,size: 30,)
                     ),
                   ],
                 ),

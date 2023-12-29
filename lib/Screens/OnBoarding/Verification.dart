@@ -66,26 +66,26 @@ class _VerificationState extends State<Verification> {
 
   // Verify the OTP entered by the user
   Future<void> VerifyOtp(otp) async {
-    print("Working");
     if (otp == _responseMessage || otp == '1234' && isDoctor == false) {
-      print("Working1");
       setState(() {
         isVerified = true;
       });
     } else{
-      print("Working2");
       final digits = widget.mobileNumber;
       final response = await http.get(Uri.parse('http://10.0.2.2:5000/get_doctors_by_number/$digits'));
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
         var generated_otp = jsonData['otp'];
+        String generatedOtpStr = generated_otp.toString();
         print(generated_otp);
 
-        if(generated_otp == otp){
+        if(generatedOtpStr == otp){
           setState(() {
             isVerified = true;
           });
+        } else{
+          print("Wrong OTP");
         }
 
       } else {
@@ -93,6 +93,7 @@ class _VerificationState extends State<Verification> {
       }
     }
     if (isVerified == true) {
+      print("working");
       context.read<UserProvider>().setPhoneNumber(widget.mobileNumber);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('phoneNumber',widget.mobileNumber);

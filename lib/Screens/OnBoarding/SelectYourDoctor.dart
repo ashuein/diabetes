@@ -11,6 +11,8 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Components/DoctorCard.dart';
+
 class SelectYourDoctor extends StatefulWidget {
   @override
   _SelectYourDoctorState createState() => _SelectYourDoctorState();
@@ -18,6 +20,7 @@ class SelectYourDoctor extends StatefulWidget {
 
 class _SelectYourDoctorState extends State<SelectYourDoctor> {
   List<Map<String, dynamic>> doctors = [];
+  bool done = false;
 
   @override
   void initState() {
@@ -44,8 +47,8 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
     var familyHistory = context.read<UserProvider>().familyHistory;
     var medicalCondition = context.read<UserProvider>().medicalCondition;
     var doctorid = context.read<UserProvider>().doctorid;
-    var profilepic = context.read<UserProvider>().imageFile;
-    var image = imageToBase64(profilepic!);
+    // var profilepic = context.read<UserProvider>().imageFile;
+    // var image = imageToBase64(profilepic!);
 
     final data = {
       "name": name,
@@ -58,8 +61,10 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
       "bloodGroup": bloodGroup,
       "status": 0,
       "doctorid": doctorid,
-      "image": image,
+      // "image": image,
     };
+
+    print(data);
 
     final response = await http.post(
       Uri.parse('http://10.0.2.2:5000/users'),
@@ -70,6 +75,9 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
       print("Created Successfully");
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('onboardingCompleted',true);
+      setState(() {
+        done = true;
+      });
     } else {
       print('Failed to add user.');
     }
@@ -125,12 +133,15 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
                             // Add your onTap functionality here
                             context.read<UserProvider>().setDoctorid(doctor['email']);
                             await addUser();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HomeScreenP(),
-                              ),
-                            );
+
+                            if(done == true) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeScreenP(),
+                                ),
+                              );
+                            }
                           },
                         );
                       },
@@ -139,74 +150,6 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-
-// Widget for displaying doctor information
-class DoctorCard extends StatelessWidget {
-  final String name;
-  final String email;
-  final String hospitalName;
-  final String city;
-  final VoidCallback onTap;
-
-  DoctorCard({
-    required this.name,
-    required this.email,
-    required this.hospitalName,
-    required this.city,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15.0),
-      child: Card(
-        elevation: 4.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-          side: BorderSide(color: Colors.blue, width: 2.0),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: ListTile(
-            onTap: onTap,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Name : $name",
-                      style: GoogleFonts.inter(
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          color: Color(0xffF86851),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-                    Text(email),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(hospitalName),
-                    SizedBox(height: 10.0),
-                    Text(city),
-                  ],
-                ),
-              ],
-            ),
           ),
         ),
       ),

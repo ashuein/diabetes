@@ -183,7 +183,6 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                         _formKey.currentState!.save();
 
                         if(selectedBloodGroup != null){
-                          print("working");
                           context.read<UserProvider>().setBloodGroup(selectedBloodGroup!);
                         } else{
                           print("working else");
@@ -198,7 +197,7 @@ class _MedicalHistoryState extends State<MedicalHistory> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProfilePic(),
+                            builder: (context) => SelectYourDoctor(),
                           ),
                         );
                       }

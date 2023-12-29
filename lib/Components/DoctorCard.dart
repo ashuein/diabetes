@@ -37,6 +37,7 @@ class DoctorCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -51,11 +52,7 @@ class DoctorCard extends StatelessWidget {
                     ),
                     SizedBox(height: 10.0),
                     Text(email),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                    SizedBox(height: 10.0),
                     Text(hospitalName),
                     SizedBox(height: 10.0),
                     Text(city),
