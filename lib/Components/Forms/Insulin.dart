@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
+import 'package:toast/toast.dart';
 import '../../Providers/UserInfo.dart';
 
 class InsulinEntryBottomSheet extends StatefulWidget {
@@ -17,7 +17,7 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
 
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
-  String mealType = 'Before'; // Assuming 'Before' is the default value
+  String mealType = 'Meal Bolus'; // Assuming 'Before' is the default value
   TextEditingController insulinController = TextEditingController();
 
   void _onMealSelected(String type) {
@@ -35,6 +35,9 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+
+    ToastContext().init(context);
+
     return Container(
       child: SingleChildScrollView(
         child: Padding(
@@ -120,57 +123,63 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Meal Type:'),
+                    Text('Type:'),
                     SizedBox(
                       height: 10,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ElevatedButton(
-                          onPressed: () => _onMealSelected("Before"),
-                          child: const Text('Before'),
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: mealType == "Before"
-                                  ? Colors.white
-                                  : const Color(0xff6373CC),
-                              backgroundColor: mealType == "Before"
-                                  ? const Color(0xffF86851)
-                                  : const Color(0xffD9D9D9),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              minimumSize: const Size(100, 40)),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: () => _onMealSelected("Meal Bolus"),
+                            child: const Text('Meal Bolus',textAlign: TextAlign.center,),
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: mealType == "Meal Bolus"
+                                    ? Colors.white
+                                    : const Color(0xff6373CC),
+                                backgroundColor: mealType == "Meal Bolus"
+                                    ? const Color(0xffF86851)
+                                    : const Color(0xffD9D9D9),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                minimumSize: const Size(100, 40)),
+                          ),
                         ),
-                        ElevatedButton(
-                          onPressed: () => _onMealSelected("After"),
-                          child: const Text('After'),
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: mealType == "After"
-                                  ? Colors.white
-                                  : const Color(0xff6373CC),
-                              backgroundColor: mealType == "After"
-                                  ? const Color(0xffF86851)
-                                  : const Color(0xffD9D9D9),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              minimumSize: const Size(100, 40)),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: () => _onMealSelected("Basal Insulin"),
+                            child: const Text('Basal Insulin',textAlign: TextAlign.center,),
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: mealType == "Basal Insulin"
+                                    ? Colors.white
+                                    : const Color(0xff6373CC),
+                                backgroundColor: mealType == "Basal Insulin"
+                                    ? const Color(0xffF86851)
+                                    : const Color(0xffD9D9D9),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                minimumSize: const Size(100, 40)),
+                          ),
                         ),
-                        ElevatedButton(
-                          onPressed: () => _onMealSelected("Other"),
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: mealType == "Other"
-                                  ? Colors.white
-                                  : const Color(0xff6373CC),
-                              backgroundColor: mealType == "Other"
-                                  ? const Color(0xffF86851)
-                                  : const Color(0xffD9D9D9),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              minimumSize: const Size(100, 40)),
-                          child: const Text('Other'),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: () => _onMealSelected("Correction Dose"),
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: mealType == "Correction Dose"
+                                    ? Colors.white
+                                    : const Color(0xff6373CC),
+                                backgroundColor: mealType == "Correction Dose"
+                                    ? const Color(0xffF86851)
+                                    : const Color(0xffD9D9D9),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                minimumSize: const Size(100, 40)),
+                            child: const Text('Correction Dose',textAlign: TextAlign.center,),
+                          ),
                         ),
                       ],
                     ),
@@ -184,8 +193,8 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        saveInsulinEntry();
+                      onPressed: () async {
+                        await saveInsulinEntry();
                         Navigator.of(context).pop();
                       },
                       style: ElevatedButton.styleFrom(
@@ -220,15 +229,19 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
   // Function to save the blood sugar entry
   Future<void> saveInsulinEntry() async {
 
-    // TO:DO WHAT IF NULL
-
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     String timeStr = selectedTime.format(context);
 
-    // print(mealType);
-    // print(bloodSugarController.text);
-    // print(dateStr);
-    // print(timeStr);
+    if (insulinController.text.isEmpty || double.tryParse(insulinController.text) == null
+        || double.parse(insulinController.text) < 0){
+      Toast.show(
+        "Please enter a valid insulin value",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
+      return;
+    }
 
     final data = {
       'selectedDate': dateStr,
@@ -246,9 +259,15 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
       body: jsonEncode(data),
     );
 
+    // Handle success
     if (response.statusCode == 201) {
-      print('Insulin record saved successfully');
-      // Handle success
+      Toast.show(
+        "Insulin record saved successfully",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
+      // print('Insulin record saved successfully');
     } else {
       print('Failed to save insulin record');
       // Handle error

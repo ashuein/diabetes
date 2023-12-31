@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:toast/toast.dart';
 import '../../Providers/UserInfo.dart';
 
 class BloodSugarEntryBottomSheet extends StatefulWidget {
@@ -36,6 +36,9 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
 
   @override
   Widget build(BuildContext context) {
+
+    ToastContext().init(context);
+
     return Container(
       child: SingleChildScrollView(
         child: Padding(
@@ -159,19 +162,19 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
                               minimumSize: const Size(100, 40)),
                         ),
                         ElevatedButton(
-                          onPressed: () => _onMealSelected("Other"),
+                          onPressed: () => _onMealSelected("Low Sugar"),
                           style: ElevatedButton.styleFrom(
-                              foregroundColor: mealType == "Other"
+                              foregroundColor: mealType == "Low Sugar"
                                   ? Colors.white
                                   : const Color(0xff6373CC),
-                              backgroundColor: mealType == "Other"
+                              backgroundColor: mealType == "Low Sugar"
                                   ? const Color(0xffF86851)
                                   : const Color(0xffD9D9D9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               minimumSize: const Size(100, 40)),
-                          child: const Text('Other'),
+                          child: const Text('Low Sugar'),
                         ),
                       ],
                     ),
@@ -185,8 +188,8 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        saveBloodSugarEntry();
+                      onPressed: () async {
+                        await saveBloodSugarEntry();
                         Navigator.of(context).pop();
                       },
                       style: ElevatedButton.styleFrom(
@@ -230,15 +233,19 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
   // Function to save the blood sugar entry
   Future<void> saveBloodSugarEntry() async {
 
-    // TO:DO WHAT IF THE SUGAR IS NULL
-
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     String timeStr = selectedTime.format(context);
 
-    // print(mealType);
-    // print(bloodSugarController.text);
-    // print(dateStr);
-    // print(timeStr);
+    if (bloodSugarController.text.isEmpty || double.tryParse(bloodSugarController.text) == null
+    || double.parse(bloodSugarController.text) < 0){
+      Toast.show(
+        "Please enter a valid blood sugar value",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
+      return;
+    }
 
     final data = {
       'selectedDate': dateStr,
@@ -257,7 +264,13 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
     );
 
     if (response.statusCode == 201) {
-      print('Blood sugar record saved successfully');
+      Toast.show(
+        "Blood sugar record saved successfully",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
+      // print('Blood sugar record saved successfully');
       _updateProgress();
       // Handle success
     } else {

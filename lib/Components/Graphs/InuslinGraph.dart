@@ -102,7 +102,7 @@ class _InsulinGraphState extends State<InsulinGraph> {
   Widget buildInsulinGraph() {
     List<ChartData> chartData = [];
     for (var data in insulinData) {
-      var insulin = double.parse(data['insulin']);
+      var insulin = data['insulin'];
       var date = DateTime.parse(data['date']); // Assuming this contains the date portion in a valid format
       var timeString = data['time']; // Assuming this contains the time portion in the format "11:00:00"
       var meal_time = data['meal_type'];
