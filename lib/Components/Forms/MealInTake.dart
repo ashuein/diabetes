@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 import '../../Providers/UserInfo.dart';
 
 class MealIntakeEntryBottomSheet extends StatefulWidget {
@@ -20,6 +21,7 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
   TimeOfDay selectedTime = TimeOfDay.now();
   String mealType = 'Light';
   File? imageFile;
+  TextEditingController CarbController = TextEditingController();
 
   void _onMealSelected(String type) {
     setState(() {
@@ -50,6 +52,9 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
 
   @override
   Widget build(BuildContext context) {
+
+    ToastContext().init(context);
+
     return Container(
       child: SingleChildScrollView(
         child: Padding(
@@ -80,26 +85,46 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //  This is for Food Picture functionality
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     imageFile != null ? Image.file(
+                    //       imageFile!,
+                    //       width: 100, // Set a suitable width for the displayed image
+                    //       height: 50, // Set a suitable height for the displayed image
+                    //       fit: BoxFit.cover, // Choose the appropriate fit for the image
+                    //     ) : Text("Add a Picture"),
+                    //     ElevatedButton(
+                    //       onPressed: () {
+                    //         _pickProfilePicture();
+                    //       },
+                    //       style: ElevatedButton.styleFrom(
+                    //           backgroundColor: const Color(0xffF86851),
+                    //           shape: RoundedRectangleBorder(
+                    //             borderRadius: BorderRadius.circular(10),
+                    //           ),
+                    //           minimumSize: Size(100, 50)),
+                    //       child: Icon(Icons.camera_alt),
+                    //     ),
+                    //   ],
+                    // ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        imageFile != null ? Image.file(
-                          imageFile!,
-                          width: 100, // Set a suitable width for the displayed image
-                          height: 50, // Set a suitable height for the displayed image
-                          fit: BoxFit.cover, // Choose the appropriate fit for the image
-                        ) : Text("Add a Picture"),
-                        ElevatedButton(
-                          onPressed: () {
-                            _pickProfilePicture();
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xffF86851),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              minimumSize: Size(100, 50)),
-                          child: Icon(Icons.camera_alt),
+                        Text(
+                          "Carbohydrate Amount",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: CarbController,
+                          decoration: InputDecoration(labelText: 'Carbohydrate Amount (optional) ',labelStyle: TextStyle(fontSize: 12)),
+                          keyboardType: TextInputType.number,
                         ),
                       ],
                     ),
@@ -204,8 +229,8 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        saveMealIntakeEntry();
+                      onPressed: () async {
+                        await saveMealIntakeEntry();
                         Navigator.of(context).pop();
                       },
                       style: ElevatedButton.styleFrom(
@@ -239,24 +264,39 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
 
   // Function to save the blood sugar entry
   Future<void> saveMealIntakeEntry() async {
-    // TO:DO WHAT IF NULL
 
-    if (imageFile == null) {
-      print('Please add a picture before saving.');
+    // TO:DO WHAT IF NULL
+    // if (imageFile == null) {
+    //   print('Please add a picture before saving.');
+    //   return;
+    // }
+
+    if(CarbController.text.isEmpty || double.tryParse(CarbController.text) == null){
+        CarbController.text = "0";
+    }
+
+    if (double.parse(CarbController.text) < 0){
+      Toast.show(
+        "Please enter a valid carb amount",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
       return;
     }
 
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     String timeStr = selectedTime.format(context);
-    List<int> imageBytes = await imageFile!.readAsBytes(); // Perform null check here
-    String base64Image = base64Encode(imageBytes);
+    // List<int> imageBytes = await imageFile!.readAsBytes(); // Perform null check here
+    // String base64Image = base64Encode(imageBytes);
 
     final data = {
       'selectedDate': dateStr,
       'selectedTime': timeStr,
       'mealType': mealType,
       'phoneNumber': context.read<UserProvider>().phoneNumber,
-      'foodpic' : base64Image,
+      'carb': CarbController.text
+      // 'foodpic' : base64Image,
     };
 
     final url = 'http://10.0.2.2:5000/save_mealIntake';
@@ -268,7 +308,13 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
     );
 
     if (response.statusCode == 201) {
-      print('Meal Intake record saved successfully');
+      Toast.show(
+        "Meal Intake record saved successfully",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
+      // print('Meal Intake record saved successfully');
       // Handle success
     } else {
       print('Failed to save meal intake record');

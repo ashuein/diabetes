@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 import '../../Providers/UserInfo.dart';
 
@@ -36,6 +37,9 @@ class _ActivityEntryBottomSheetState extends State<ActivityEntryBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+
+    ToastContext().init(context);
+
     return Container(
       child: SingleChildScrollView(
         child: Padding(
@@ -164,8 +168,8 @@ class _ActivityEntryBottomSheetState extends State<ActivityEntryBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        saveMealIntakeEntry();
+                      onPressed: () async {
+                        await saveMealIntakeEntry();
                         Navigator.of(context).pop();
                       },
                       style: ElevatedButton.styleFrom(
@@ -225,7 +229,13 @@ class _ActivityEntryBottomSheetState extends State<ActivityEntryBottomSheet> {
     );
 
     if (response.statusCode == 201) {
-      print('Activity record saved successfully');
+      Toast.show(
+        "Activity record saved successfully",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
+      // print('Activity record saved successfully');
       // Handle success
     } else {
       print('Failed to save activity record');
