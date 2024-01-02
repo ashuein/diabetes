@@ -290,7 +290,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
                           new CircularPercentIndicator(
                             radius: 60.0,
                             lineWidth: 10.0,
-                            percent: context.read<UserProvider>().log! / 7,
+                            percent: context.read<UserProvider>().log! / 7 > 1.0 ? 1.0 : context.read<UserProvider>().log! / 7,
                             center: new Text('${(context.read<UserProvider>().log! / 7).toStringAsFixed(2)}%'),
                             progressColor: Color(0xff6373CC),
                           ),
