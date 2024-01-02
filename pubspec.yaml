@@ -47,6 +47,7 @@ dependencies:
   syncfusion_flutter_charts: ^22.1.39
   postgres: ^2.6.1
   toast: ^0.3.0
+  dropdown_model_list: ^2.0.0
 
 dev_dependencies:
   flutter_test:
