@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 import '../../Providers/UserInfo.dart';
+import '../../URL.dart';
 
 class MealIntakeEntryBottomSheet extends StatefulWidget {
   @override
@@ -299,7 +300,7 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
       // 'foodpic' : base64Image,
     };
 
-    final url = 'http://10.0.2.2:5000/save_mealIntake';
+    final url = '${URL.baseUrl}/save_mealIntake';
 
     final response = await http.post(
       Uri.parse(url),

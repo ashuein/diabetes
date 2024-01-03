@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
 import '../../Providers/UserInfo.dart';
+import '../../URL.dart';
 
 class ActivityEntryBottomSheet extends StatefulWidget {
   @override
@@ -220,7 +221,7 @@ class _ActivityEntryBottomSheetState extends State<ActivityEntryBottomSheet> {
       'phoneNumber': context.read<UserProvider>().phoneNumber
     };
 
-    final url = 'http://10.0.2.2:5000/save_activity';
+    final url = '${URL.baseUrl}/save_activity';
 
     final response = await http.post(
       Uri.parse(url),

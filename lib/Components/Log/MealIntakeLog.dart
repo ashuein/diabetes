@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../Providers/UserInfo.dart';
+import '../../URL.dart';
 
 class MealIntakeLog extends StatefulWidget {
 
@@ -21,7 +22,7 @@ class MealIntakeLog extends StatefulWidget {
 class _MealIntakeLogState extends State<MealIntakeLog> {
 
   Future<List<MealIntakeEntry>> fetchMealData(phoneNumber) async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:5000/get_mealIntake/$phoneNumber'));
+    final response = await http.get(Uri.parse('${URL.baseUrl}/get_mealIntake/$phoneNumber'));
     if (response.statusCode == 200) {
       final List<dynamic> responseData = json.decode(response.body);
       return responseData.asMap().map((index, entry) {

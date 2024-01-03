@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Components/DoctorCard.dart';
+import '../../URL.dart';
 
 class SelectYourDoctor extends StatefulWidget {
   @override
@@ -67,7 +68,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
     print(data);
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:5000/users'),
+      Uri.parse('${URL.baseUrl}/users'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(data),
     );
@@ -85,7 +86,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
 
   // Fetch list of doctors from the server
   void fetchData() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:5000/get_doctors'));
+    final response = await http.get(Uri.parse('${URL.baseUrl}/get_doctors'));
     if (response.statusCode == 200) {
       setState(() {
         final jsonData = json.decode(response.body);

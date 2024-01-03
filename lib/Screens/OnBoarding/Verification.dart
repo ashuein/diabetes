@@ -10,6 +10,8 @@ import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../URL.dart';
+
 class Verification extends StatefulWidget {
   final String mobileNumber;
 
@@ -30,7 +32,7 @@ class _VerificationState extends State<Verification> {
 
   // Send OTP request to the server
   Future<void> SendOTP(mobileNumber) async {
-    final apiUrl = 'http://10.0.2.2:5000/generateOtp'; // Replace with your Flask server IP
+    final apiUrl = '${URL.baseUrl}/generateOtp'; // Replace with your Flask server IP
 
     final data = {
       "numbers": mobileNumber,
@@ -72,7 +74,7 @@ class _VerificationState extends State<Verification> {
       });
     } else{
       final digits = widget.mobileNumber;
-      final response = await http.get(Uri.parse('http://10.0.2.2:5000/get_doctors_by_number/$digits'));
+      final response = await http.get(Uri.parse('${URL.baseUrl}/get_doctors_by_number/$digits'));
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
@@ -93,7 +95,6 @@ class _VerificationState extends State<Verification> {
       }
     }
     if (isVerified == true) {
-      print("working");
       context.read<UserProvider>().setPhoneNumber(widget.mobileNumber);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('phoneNumber',widget.mobileNumber);
@@ -108,7 +109,7 @@ class _VerificationState extends State<Verification> {
 
   // Check if the mobile number belongs to a doctor
   Future<void> checkDoctor(mobileNumber) async {
-    final url = 'http://10.0.2.2:5000/check_number';
+    final url = '${URL.baseUrl}/check_number';
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({"number": mobileNumber});
 
@@ -128,7 +129,7 @@ class _VerificationState extends State<Verification> {
 
   // Check if the user is logging in for the first time
   Future<void> checkFirstTime(mobileNumber) async {
-    final url = 'http://10.0.2.2:5000/check_number_first_time';
+    final url = '${URL.baseUrl}/check_number_first_time';
     final headers = {'Content-Type': 'application/json'};
     final body = json.encode({"number": mobileNumber});
 

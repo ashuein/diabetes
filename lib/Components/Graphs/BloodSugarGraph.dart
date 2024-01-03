@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import '../../URL.dart';
 import '../ColorBlockDialog.dart';
 import '../Log/BloodSugarLogs.dart';
 import 'package:dropdown_model_list/dropdown_model_list.dart';
@@ -38,7 +39,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
 
   Future<void> fetchData(phoneNumber) async {
     final response = await http.get(
-        Uri.parse('http://10.0.2.2:5000/blood_sugar_records/$phoneNumber'));
+        Uri.parse('${URL.baseUrl}/blood_sugar_records/$phoneNumber'));
     if (response.statusCode == 200) {
       setState(() {
         bloodSugarData =
@@ -637,7 +638,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
                 String formattedTime = timeFormatter.format(data.dateTime);
 
                 final String customLabel =
-                    '$formattedDate \n $formattedTime \n ${data.bloodSugar
+                    '$formattedDate \n ${data.bloodSugar
                     .toInt()}';
 
                 var Boxcolor = Colors.black87;

@@ -17,6 +17,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import '../../Components/CustomListTitle.dart';
 import '../../Components/Forms/Activity.dart';
 import '../../Components/Forms/BloodGlucose.dart';
+import '../../URL.dart';
 import 'ChangeProfilePic.dart';
 import 'GraphsScreen.dart';
 import 'cal.dart';
@@ -72,7 +73,9 @@ class _HomeScreenPState extends State<HomeScreenP> {
 
     // Make a GET request to fetch user data
     // Set Provider values based on fetched data
-    final url = 'http://10.0.2.2:5000/get_users/$phoneNumber';
+    final url = '${URL.baseUrl}/get_users/$phoneNumber';
+
+    print(url);
 
     try {
       final response = await http.get(Uri.parse(url));

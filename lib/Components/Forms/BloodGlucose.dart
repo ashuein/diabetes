@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import '../../Providers/UserInfo.dart';
+import '../../URL.dart';
 
 class BloodSugarEntryBottomSheet extends StatefulWidget {
   @override
@@ -255,7 +256,7 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
       'phoneNumber': context.read<UserProvider>().phoneNumber
     };
 
-    final url = 'http://10.0.2.2:5000/save_blood_sugar';
+    final url = '${URL.baseUrl}/save_blood_sugar';
 
     final response = await http.post(
       Uri.parse(url),

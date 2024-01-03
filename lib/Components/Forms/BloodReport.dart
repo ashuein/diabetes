@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../URL.dart';
+
 class BloodReportEntryBottomSheet extends StatefulWidget {
   @override
   _BloodReportEntryBottomSheetState createState() =>
@@ -243,7 +245,7 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
       'phoneNumber': context.read<UserProvider>().phoneNumber
     };
 
-    final url = 'http://10.0.2.2:5000/save_blood_reports';
+    final url = '${URL.baseUrl}/save_blood_reports';
 
     final response = await http.post(
       Uri.parse(url),

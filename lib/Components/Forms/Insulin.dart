@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 import '../../Providers/UserInfo.dart';
+import '../../URL.dart';
 
 class InsulinEntryBottomSheet extends StatefulWidget {
   @override
@@ -251,7 +252,7 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
       'phoneNumber': context.read<UserProvider>().phoneNumber
     };
 
-    final url = 'http://10.0.2.2:5000/save_insulin';
+    final url = '${URL.baseUrl}/save_insulin';
 
     final response = await http.post(
       Uri.parse(url),
