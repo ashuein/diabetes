@@ -5,14 +5,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
-
 import '../../Providers/UserInfo.dart';
 import '../../URL.dart';
 
 class ActivityEntryBottomSheet extends StatefulWidget {
+
+  final Future<void> Function() callbackToUpdateInfo;
+
+  ActivityEntryBottomSheet({required this.callbackToUpdateInfo});
+
   @override
-  _ActivityEntryBottomSheetState createState() =>
-      _ActivityEntryBottomSheetState();
+  _ActivityEntryBottomSheetState createState() => _ActivityEntryBottomSheetState();
 }
 
 class _ActivityEntryBottomSheetState extends State<ActivityEntryBottomSheet> {
@@ -236,6 +239,8 @@ class _ActivityEntryBottomSheetState extends State<ActivityEntryBottomSheet> {
         gravity: Toast.bottom,
         backgroundRadius: 8.0,
       );
+
+      widget.callbackToUpdateInfo();
       // print('Activity record saved successfully');
       // Handle success
     } else {

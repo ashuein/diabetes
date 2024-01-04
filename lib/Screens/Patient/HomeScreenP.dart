@@ -17,6 +17,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import '../../Components/CustomListTitle.dart';
 import '../../Components/Forms/Activity.dart';
 import '../../Components/Forms/BloodGlucose.dart';
+import '../../Components/SummarySection.dart';
 import '../../URL.dart';
 import 'ChangeProfilePic.dart';
 import 'GraphsScreen.dart';
@@ -30,12 +31,16 @@ class HomeScreenP extends StatefulWidget {
 }
 
 class _HomeScreenPState extends State<HomeScreenP> {
+
   late String phoneNumber;
   late SharedPreferences prefs;
   String _profilePicturePath = '';
   double _progress = 0;
   late DateTime _lastDate;
 
+  double insulinAverage = 0;
+  double carbsAverage = 0;
+  String recent_activity = "No recent activity";
 
   final TextEditingController bloodSugarController = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -55,6 +60,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
     await prefs.setBool('onboardingCompleted', true);
     phoneNumber = prefs.getString('phoneNumber') ?? "";
     fetchUserData(phoneNumber);
+    fetchInfoToday();
   }
 
 
@@ -75,8 +81,6 @@ class _HomeScreenPState extends State<HomeScreenP> {
     // Set Provider values based on fetched data
     final url = '${URL.baseUrl}/get_users/$phoneNumber';
 
-    print(url);
-
     try {
       final response = await http.get(Uri.parse(url));
       final data = json.decode(response.body);
@@ -94,7 +98,6 @@ class _HomeScreenPState extends State<HomeScreenP> {
 
       // File profilePicFile = base64ToFile(data['profilepic']);
       // context.read<UserProvider>().setImageFile(profilePicFile);
-
     } catch (error) {
       print(error);
     }
@@ -121,7 +124,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
       ),
       builder: (BuildContext context) {
-        return InsulinEntryBottomSheet();
+        return InsulinEntryBottomSheet(callbackToUpdateInfo:fetchInfoToday);
       },
     );
   }
@@ -133,7 +136,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
       ),
       builder: (BuildContext context) {
-        return MealIntakeEntryBottomSheet();
+        return MealIntakeEntryBottomSheet(callbackToUpdateInfo:fetchInfoToday);
       },
     );
   }
@@ -145,7 +148,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
       ),
       builder: (BuildContext context) {
-        return ActivityEntryBottomSheet();
+        return ActivityEntryBottomSheet(callbackToUpdateInfo: fetchInfoToday);
       },
     );
   }
@@ -194,8 +197,69 @@ class _HomeScreenPState extends State<HomeScreenP> {
     });
   }
 
+
+  // main screen, show cab intake, physical activity and insulin taken
+  Future<void> fetchInfoToday() async {
+
+    DateTime currentDate = DateTime.now().toLocal();
+    String formattedDate = currentDate.toLocal().toString().split(' ')[0];
+
+    final String url = '${URL.baseUrl}/process_data/$phoneNumber/$formattedDate';
+    print(url);
+
+    final response = await http.get(Uri.parse(url));
+    final data = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      // Process the data received from the server
+
+      List<dynamic>insulinRecords = data["insulin_records"];
+      List<dynamic> carbsRecords = data["meal_records"];
+
+      if (data["activity_records"] != null && data["activity_records"].isNotEmpty) {
+        recent_activity = data["activity_records"][0][0].toString();
+      }
+
+      double sum = 0.0;
+      for(int i = 0 ; i < insulinRecords.length ; i++){
+          sum += insulinRecords[i][0];
+      }
+      insulinAverage = sum / insulinRecords.length;
+
+      sum = 0.0;
+      int diff = 0;
+      for(int i = 0 ; i < carbsRecords.length ; i++){
+        if(carbsRecords[i][0] == 0){
+          diff++;
+        }
+        sum += carbsRecords[i][0];
+      }
+
+      carbsAverage = sum / (carbsRecords.length - diff);
+
+      if (carbsRecords.isEmpty) {
+        carbsAverage = 0.0;
+      }
+
+      if (insulinRecords.isEmpty) {
+        insulinAverage =  0.0;
+      }
+
+      setState(() { });
+
+      print(insulinAverage);
+      print(carbsAverage);
+      print(recent_activity);
+
+      print('Data from server: ${response.body}');
+    } else {
+      print('Failed to fetch data. Error: ${response.statusCode}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+
     final user = Provider.of<UserProvider>(context);
 
     return Scaffold(
@@ -269,96 +333,59 @@ class _HomeScreenPState extends State<HomeScreenP> {
                     ),
                   ],
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 45, left: 10, right: 10),
+                const SizedBox(
+                  height: 3,
+                ),
+              Card(
+                elevation: 3.0,
+                margin: EdgeInsets.only(top: 25.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0), // Adjust the radius as needed
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(18.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      SizedBox(height: 3,),
                       Text(
-                        "Today's Progress",
-                        style: GoogleFonts.inter(
+                        "Today's Summary",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
                           textStyle: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
+                            color: Color(0xff6373CC),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                      SizedBox(
-                        height: 30,
-                      ),
+                      SizedBox(height: 18.0),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          new CircularPercentIndicator(
-                            radius: 60.0,
-                            lineWidth: 10.0,
-                            percent: context.read<UserProvider>().log! / 7 > 1.0 ? 1.0 : context.read<UserProvider>().log! / 7,
-                            center: new Text('${(context.read<UserProvider>().log! / 7).toStringAsFixed(2)}%'),
-                            progressColor: Color(0xff6373CC),
+                          SummarySection(
+                            label: "Average Insulin",
+                            value: insulinAverage.toString(),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Today's Progress",
-                                    style: GoogleFonts.inter(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "${(context.read<UserProvider>().log!).toInt()} out of 7 Completed",
-                                    style: GoogleFonts.inter(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xffF86851)),
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  GestureDetector(
-                                    onTap : (){
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => Cal()),
-                                      );
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "Calculate Insulin\nIntake  >",
-                                          style: GoogleFonts.inter(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color:Color(0xff6373CC),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
+                          SizedBox(width: 16.0,),
+                          SummarySection(
+                            label: "Average Carbs Intake",
+                            value: carbsAverage.toString(),
                           ),
                         ],
+                      ),
+                      SizedBox(height: 10.0),
+                      SummarySection2(
+                        label: "Recent Activity",
+                        value: recent_activity,
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 45, left: 10, right: 10),
+              ),
+              Container(
+                  margin: EdgeInsets.only(top: 35, left: 10, right: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

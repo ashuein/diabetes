@@ -11,6 +11,11 @@ import '../../Providers/UserInfo.dart';
 import '../../URL.dart';
 
 class MealIntakeEntryBottomSheet extends StatefulWidget {
+
+  final Future<void> Function() callbackToUpdateInfo;
+
+  MealIntakeEntryBottomSheet({required this.callbackToUpdateInfo});
+
   @override
   _MealIntakeEntryBottomSheetState createState() =>
       _MealIntakeEntryBottomSheetState();
@@ -315,6 +320,7 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
         gravity: Toast.bottom,
         backgroundRadius: 8.0,
       );
+      widget.callbackToUpdateInfo();
       // print('Meal Intake record saved successfully');
       // Handle success
     } else {

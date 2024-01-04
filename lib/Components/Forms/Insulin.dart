@@ -9,6 +9,11 @@ import '../../Providers/UserInfo.dart';
 import '../../URL.dart';
 
 class InsulinEntryBottomSheet extends StatefulWidget {
+
+  final Future<void> Function() callbackToUpdateInfo;
+
+  InsulinEntryBottomSheet({required this.callbackToUpdateInfo});
+
   @override
   _InsulinEntryBottomSheetState createState() =>
       _InsulinEntryBottomSheetState();
@@ -268,6 +273,7 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
         gravity: Toast.bottom,
         backgroundRadius: 8.0,
       );
+      widget.callbackToUpdateInfo();
       // print('Insulin record saved successfully');
     } else {
       print('Failed to save insulin record');
