@@ -6,15 +6,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 class DoctorCard extends StatelessWidget {
   final String name;
-  final String email;
-  final String hospitalName;
+  final int id;
   final String city;
   final VoidCallback onTap;
 
   DoctorCard({
     required this.name,
-    required this.email,
-    required this.hospitalName,
+    required this.id,
     required this.city,
     required this.onTap,
   });
@@ -27,36 +25,58 @@ class DoctorCard extends StatelessWidget {
         elevation: 4.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
-          side: BorderSide(color: Colors.blue, width: 2.0),
+          side: BorderSide(color: Color(0xff6373CC), width: 2.0),
         ),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: ListTile(
             onTap: onTap,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            title: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Name : $name",
-                      style: GoogleFonts.inter(
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          color: Color(0xffF86851),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                Text(
+                  "Hospital Id : ${id.toString()}",
+                  style: GoogleFonts.inter(
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      color: Color(0xff6373CC),
+                      fontWeight: FontWeight.bold,
                     ),
-                    SizedBox(height: 10.0),
-                    Text(email),
-                    SizedBox(height: 10.0),
-                    Text(hospitalName),
-                    SizedBox(height: 10.0),
-                    Text(city),
-                  ],
+                  ),
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                  maxLines: 2, // Set max lines to avoid overflow
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  "Hospital Name : $name",
+                  style: GoogleFonts.inter(
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      color: Color(0xffF86851),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                  maxLines: 2, // Set max lines to avoid overflow
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  "City : $city",
+                  style: GoogleFonts.inter(
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                  maxLines: 1, // Set max lines to avoid overflow
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

@@ -93,9 +93,8 @@ class _HomeScreenPState extends State<HomeScreenP> {
       context.read<UserProvider>().setBloodGroup(data['bloodGroup']);
       context.read<UserProvider>().setFamilyHistory(data['familyHistory']);
       context.read<UserProvider>().setMedicalCondition(data['medicalCondition']);
-      context.read<UserProvider>().setDoctorid(data['doctorid']);
-      context.read<UserProvider>().setStatus(data['status']);
-
+      context.read<UserProvider>().setHospitalid(data['hospital_id']);
+      context.read<UserProvider>().setStatus(int.parse(data['status']));
       // File profilePicFile = base64ToFile(data['profilepic']);
       // context.read<UserProvider>().setImageFile(profilePicFile);
     } catch (error) {
@@ -205,7 +204,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
     String formattedDate = currentDate.toLocal().toString().split(' ')[0];
 
     final String url = '${URL.baseUrl}/process_data/$phoneNumber/$formattedDate';
-    print(url);
+    // print(url);
 
     final response = await http.get(Uri.parse(url));
     final data = json.decode(response.body);
@@ -247,11 +246,11 @@ class _HomeScreenPState extends State<HomeScreenP> {
 
       setState(() { });
 
-      print(insulinAverage);
-      print(carbsAverage);
-      print(recent_activity);
+      // print(insulinAverage);
+      // print(carbsAverage);
+      // print(recent_activity);
 
-      print('Data from server: ${response.body}');
+      // print('Data from server: ${response.body}');
     } else {
       print('Failed to fetch data. Error: ${response.statusCode}');
     }

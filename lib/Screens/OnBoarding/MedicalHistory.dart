@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'ProfilePic.dart';
-import 'SelectYourDoctor.dart';
+import 'SelectYourHospital.dart';
 
 class MedicalHistory extends StatefulWidget {
   const MedicalHistory({super.key});

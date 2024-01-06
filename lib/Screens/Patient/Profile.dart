@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../Providers/UserInfo.dart';
-import 'ChangeDoctor.dart';
+import 'ChangeHospital.dart';
 
 
 class ProfilePage extends StatefulWidget {

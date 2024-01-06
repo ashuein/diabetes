@@ -7,10 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../Components/DoctorCard.dart';
 import '../../URL.dart';
 
@@ -20,7 +18,8 @@ class SelectYourDoctor extends StatefulWidget {
 }
 
 class _SelectYourDoctorState extends State<SelectYourDoctor> {
-  List<Map<String, dynamic>> doctors = [];
+
+  List<Map<String, dynamic>> hospitals = [];
   bool done = false;
 
   @override
@@ -47,7 +46,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
     var bloodGroup = context.read<UserProvider>().bloodGroup;
     var familyHistory = context.read<UserProvider>().familyHistory;
     var medicalCondition = context.read<UserProvider>().medicalCondition;
-    var doctorid = context.read<UserProvider>().doctorid;
+    var hospital_id = context.read<UserProvider>().hospitalid;
     // var profilepic = context.read<UserProvider>().imageFile;
     // var image = imageToBase64(profilepic!);
 
@@ -61,11 +60,9 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
       "familyHistory": familyHistory,
       "bloodGroup": bloodGroup,
       "status": 0,
-      "doctorid": doctorid,
+      "hospital_id": hospital_id,
       // "image": image,
     };
-
-    print(data);
 
     final response = await http.post(
       Uri.parse('${URL.baseUrl}/users'),
@@ -86,11 +83,11 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
 
   // Fetch list of doctors from the server
   void fetchData() async {
-    final response = await http.get(Uri.parse('${URL.baseUrl}/get_doctors'));
+    final response = await http.get(Uri.parse('${URL.baseUrl}/get_hospital'));
     if (response.statusCode == 200) {
       setState(() {
         final jsonData = json.decode(response.body);
-        doctors = List<Map<String, dynamic>>.from(jsonData['doctors']);
+        hospitals = List<Map<String, dynamic>>.from(jsonData['hospital']);
       });
     } else {
       print('Failed to fetch data');
@@ -106,7 +103,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
           child: Column(
             children: [
               Text(
-                "Select Your Doctor",
+                "Select Your Hospital",
                 style: GoogleFonts.inter(
                   textStyle: const TextStyle(
                       color: Color(0xff6373CC),
@@ -115,26 +112,24 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
                 ),
               ),
               SizedBox(
-                height: 50,
+                height: 40,
               ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Container(
                     child: ListView.builder(
-                      itemCount: doctors.length,
+                      itemCount: hospitals.length,
                       itemBuilder: (context, index) {
-                        final doctor = doctors[index];
+                        final hospital = hospitals[index];
                         return DoctorCard(
-                          name: doctor['name'],
-                          email: doctor['email'],
-                          hospitalName: doctor['hospitalName'],
-                          city: doctor['city'],
+                          id: hospital['hospital_id'],
+                          name: hospital['hospital_name'],
+                          city: hospital['city'],
                           onTap: () async {
                             // Add your onTap functionality here
-                            context.read<UserProvider>().setDoctorid(doctor['email']);
+                            context.read<UserProvider>().setHospitalid(hospital['hospital_id']);
                             await addUser();
-
                             if(done == true) {
                               Navigator.push(
                                 context,

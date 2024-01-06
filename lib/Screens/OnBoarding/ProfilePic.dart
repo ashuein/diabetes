@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:diabetes_ms/Providers/UserInfo.dart';
-import 'package:diabetes_ms/Screens/OnBoarding/SelectYourDoctor.dart';
+import 'package:diabetes_ms/Screens/OnBoarding/SelectYourHospital.dart';
 import 'package:diabetes_ms/Screens/Patient/HomeScreenP.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

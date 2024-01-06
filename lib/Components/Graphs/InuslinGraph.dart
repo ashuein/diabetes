@@ -43,7 +43,8 @@ class _InsulinGraphState extends State<InsulinGraph> {
   Future<void> fetchData(phoneNumber) async {
     final response =
     // http://10.0.2.2:5000
-    await http.get(Uri.parse('${URL.baseUrl}/insulin_records/$phoneNumber'));
+    await http.get(Uri.parse('${URL.baseUrl}/insulin_records/$phoneNumber'),
+        headers: {'Connection': 'keep-alive'});
     if (response.statusCode == 200) {
       setState(() {
         insulinData =

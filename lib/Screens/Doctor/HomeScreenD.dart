@@ -43,8 +43,8 @@ class _HomeScreenDState extends State<HomeScreenD> {
     try {
       final response = await http.get(Uri.parse(url));
       final data = json.decode(response.body);
+      doctorId = data['hospital_id'].toString();
       context.read<UserProvider>().setName(data['name']);
-      doctorId = data['email'];
       setState(() {});
     } catch (error) {
       print(error);
@@ -53,8 +53,14 @@ class _HomeScreenDState extends State<HomeScreenD> {
 
   // Function to fetch patients data for the doctor
   Future<List<Map<String, dynamic>>> _fetchPatientsData(doctorId) async {
+
+    if (doctorId == null || doctorId.isEmpty) {
+      return Future.value([]);
+    }
+
     final url = 'http://10.0.2.2:5000/approved_patients/$doctorId';
     final response = await http.get(Uri.parse(url));
+
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -130,7 +136,7 @@ class _HomeScreenDState extends State<HomeScreenD> {
                                 alignment: Alignment.centerLeft,
                                 fit: BoxFit.scaleDown,
                                 child: Text(
-                                  "Doctor ${userProvider.name} !",
+                                  "${userProvider.name} !",
                                   textAlign: TextAlign.left,
                                   style: GoogleFonts.inter(
                                     textStyle: TextStyle(

@@ -11,7 +11,7 @@ class UserProvider extends ChangeNotifier {
   String? _medicalCondition;
   String? _familyHistory;
   String? _bloodGroup;
-  String? _doctorid;
+  int? _hospitalid;
   int? _status;
   File? _imageFile;
   double? _log = 0;
@@ -25,7 +25,7 @@ class UserProvider extends ChangeNotifier {
   String? get medicalCondition => _medicalCondition;
   String? get familyHistory => _familyHistory;
   String? get bloodGroup => _bloodGroup;
-  String? get doctorid => _doctorid;
+  int? get hospitalid => _hospitalid;
   int? get status => _status;
   File? get imageFile => _imageFile;
   double? get log => _log;
@@ -76,8 +76,8 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setDoctorid(String doctorid) {
-    _doctorid = doctorid;
+  void setHospitalid(int hospitalid) {
+    _hospitalid = hospitalid;
     notifyListeners();
   }
 

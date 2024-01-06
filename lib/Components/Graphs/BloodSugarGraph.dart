@@ -39,12 +39,12 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
 
   Future<void> fetchData(phoneNumber) async {
     final response = await http.get(
-        Uri.parse('${URL.baseUrl}/blood_sugar_records/$phoneNumber'));
+        Uri.parse('${URL.baseUrl}/blood_sugar_records/$phoneNumber'),
+      headers: {'Connection': 'keep-alive'});
     if (response.statusCode == 200) {
       setState(() {
         bloodSugarData =
         List<Map<String, dynamic>>.from(json.decode(response.body));
-        // print(bloodSugarData);
       });
     } else {
       print('Failed to load data: ${response.statusCode}');

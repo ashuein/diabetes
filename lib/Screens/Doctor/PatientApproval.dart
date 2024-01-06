@@ -33,7 +33,7 @@ class _ApprovalState extends State<Approval> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboardingCompleted', true);
     var phoneNumber = prefs.getString('phoneNumber') ?? "";
-    fetchUserData(phoneNumber);
+    await fetchUserData(phoneNumber);
   }
 
   // Function to fetch user data from the server
@@ -42,8 +42,8 @@ class _ApprovalState extends State<Approval> {
     try {
       final response = await http.get(Uri.parse(url));
       final data = json.decode(response.body);
+      doctorId = data['hospital_id'].toString();
       context.read<UserProvider>().setName(data['name']);
-      doctorId = data['email'];
       setState(() {});
     } catch (error) {
       print(error);
@@ -52,14 +52,21 @@ class _ApprovalState extends State<Approval> {
 
   // Function to fetch pending patients data for the doctor
   Future<List<Map<String, dynamic>>> _fetchPatientsData(doctorId) async {
-    final url = 'http://10.0.2.2:5000/pending_patients/$doctorId';
-    final response = await http.get(Uri.parse(url));
+    if (doctorId != null && doctorId.isNotEmpty) {
+      final url = 'http://10.0.2.2:5000/pending_patients/$doctorId';
+      final response = await http.get(Uri.parse(url));
+      print(url);
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return List<Map<String, dynamic>>.from(data);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return List<Map<String, dynamic>>.from(data);
+      } else {
+        throw Exception('Failed to load patients data');
+      }
     } else {
-      throw Exception('Failed to load patients data');
+      // Handle the case when doctorId is empty
+      // You can return an empty list, throw an exception, or handle it as needed
+      throw Exception('Fetching Data...');
     }
   }
 
@@ -137,7 +144,7 @@ class _ApprovalState extends State<Approval> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
+                  return Center(child: Text('${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(child: Text('No patients data found'));
                 } else {
@@ -155,7 +162,6 @@ class _ApprovalState extends State<Approval> {
                         final apiUrl = 'http://10.0.2.2:5000/update_status1';
                         final headers = {'Content-Type': 'application/json'};
                         final body = json.encode({'phone_number': phoneNumber});
-
                         try {
                           final response = await http.post(Uri.parse(apiUrl),
                               headers: headers, body: body);
