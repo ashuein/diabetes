@@ -24,7 +24,8 @@ class RoundedVerticalRectangle extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(child: icon),
+              Expanded(child: Container(width: 65,
+                  height: 65,child: icon)),
               FittedBox(
                 child: Text(
                   heading,

@@ -10,6 +10,7 @@ import '../../Components/Log/BloodReport.dart';
 import '../../Components/Log/MealIntakeLog.dart';
 import '../../Components/Log/PhysicalActivityLog.dart';
 import '../../Components/RectangleButton.dart';
+import 'cal.dart';
 
 class GraphScreen extends StatefulWidget {
   const GraphScreen({super.key});
@@ -27,6 +28,8 @@ class _GraphScreenState extends State<GraphScreen> {
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
                   children: [
@@ -37,9 +40,13 @@ class _GraphScreenState extends State<GraphScreen> {
                         Navigator.pop(context);
                       },
                     ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.2,
+                    ),
                     Center(
                       child: Text(
-                        "Select Your Graph",
+                        "Toolkit",
+                        textAlign: TextAlign.center,
                         style: GoogleFonts.inter(
                           textStyle: TextStyle(
                             color: Color(0xff6373CC),
@@ -124,6 +131,18 @@ class _GraphScreenState extends State<GraphScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => BloodReport(patientNumber: context.read<UserProvider>().phoneNumber ?? ""),
+                                ),
+                              );
+                            },
+                          ),
+                          RoundedVerticalRectangle(
+                            icon: Image.asset('assets/images/cal.png'),
+                            heading: 'Insulin Calculator',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Cal(),
                                 ),
                               );
                             },

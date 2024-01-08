@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:toast/toast.dart';
 import '../../URL.dart';
 
 class Verification extends StatefulWidget {
@@ -30,49 +30,74 @@ class _VerificationState extends State<Verification> {
   late String otp, _responseMessage = '';
 
 
-  // Send OTP request to the server
-  Future<void> SendOTP(mobileNumber) async {
-    final apiUrl = '${URL.baseUrl}/generateOtp'; // Replace with your Flask server IP
-
-    final data = {
-      "numbers": mobileNumber,
-    };
-
-    print(data);
-
-    try {
-      final response = await http.post(Uri.parse(apiUrl),
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: json.encode(data));
-
-      print(response.body);
-      final responseData = json.decode(response.body);
-
-      setState(() {
-        _responseMessage = responseData.toString();
-        isDisabled = false;
-      });
-
-      Timer(Duration(seconds: 3), () {
-        setState(() {
-          isDisabled = true;
-        });
-      });
-
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+  // Function to Send OTP request to the server
+  //
+  // Future<void> SendOTP(mobileNumber) async {
+  //   final apiUrl = '${URL.baseUrl}/generateOtp'; // Replace with your Flask server IP
+  //
+  //   final data = {
+  //     "numbers": mobileNumber,
+  //   };
+  //
+  //   try {
+  //     final response = await http.post(Uri.parse(apiUrl),
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: json.encode(data));
+  //
+  //     print(response.body);
+  //     final responseData = json.decode(response.body);
+  //
+  //     setState(() {
+  //       _responseMessage = responseData.toString();
+  //       isDisabled = false;
+  //     });
+  //
+  //     Timer(Duration(seconds: 3), () {
+  //       setState(() {
+  //         isDisabled = true;
+  //       });
+  //     });
+  //
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
 
   // Verify the OTP entered by the user
+
   Future<void> VerifyOtp(otp) async {
-    if (otp == _responseMessage || otp == '1234' && isDoctor == false) {
-      setState(() {
-        isVerified = true;
-      });
-    } else{
+
+      if ( isDoctor == false) {
+
+        // otp == _responseMessage || otp == '1234' && --> this is for testing only
+
+        final digits = widget.mobileNumber;
+        final response = await http.get(
+            Uri.parse('${URL.baseUrl}/get_users/$digits'));
+
+        if (response.statusCode == 200) {
+          final jsonData = json.decode(response.body);
+          var generated_otp = jsonData['otp'];
+          String generatedOtpStr = generated_otp.toString();
+
+          if (generatedOtpStr == otp) {
+            setState(() {
+              isVerified = true;
+            });
+          } else {
+            Toast.show(
+              "Incorrect OTP code",
+              duration: Toast.lengthShort,
+              gravity: Toast.bottom,
+              backgroundRadius: 8.0,
+            );
+          }
+        }
+      }
+
+      else {
       final digits = widget.mobileNumber;
       final response = await http.get(Uri.parse('${URL.baseUrl}/get_doctors_by_number/$digits'));
 
@@ -80,14 +105,18 @@ class _VerificationState extends State<Verification> {
         final jsonData = json.decode(response.body);
         var generated_otp = jsonData['otp'];
         String generatedOtpStr = generated_otp.toString();
-        print(generated_otp);
 
         if(generatedOtpStr == otp){
           setState(() {
             isVerified = true;
           });
         } else{
-          print("Wrong OTP");
+          Toast.show(
+            "Incorrect OTP code",
+            duration: Toast.lengthShort,
+            gravity: Toast.bottom,
+            backgroundRadius: 8.0,
+          );
         }
 
       } else {
@@ -149,7 +178,7 @@ class _VerificationState extends State<Verification> {
   @override
   void initState() {
     super.initState();
-    SendOTP(widget.mobileNumber);
+    // SendOTP(widget.mobileNumber);
     checkDoctor(widget.mobileNumber);
   }
 
@@ -158,9 +187,10 @@ class _VerificationState extends State<Verification> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    print(alreadyP);
+    ToastContext().init(context);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
@@ -243,7 +273,7 @@ class _VerificationState extends State<Verification> {
                         isDisabled
                             ? GestureDetector(
                                 onTap: () {
-                                  SendOTP(widget.mobileNumber);
+                                  // SendOTP(widget.mobileNumber);
                                 },
                                 child: Text(
                                   "Resend",
@@ -271,6 +301,9 @@ class _VerificationState extends State<Verification> {
                                 _formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
                               await checkFirstTime(widget.mobileNumber);
+                              setState(() {
+                                isVerified = false;
+                              });
                               VerifyOtp(otp);
                             }
                           },

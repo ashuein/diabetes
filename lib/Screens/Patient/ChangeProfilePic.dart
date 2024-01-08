@@ -27,36 +27,36 @@ class _ChnageProfilePicState extends State<ChnageProfilePic> {
     super.initState();
   }
 
-  // Update profile picture by sending image to the server
-  Future<void> updateProfilePicture(File imageFile, String phoneNumber) async {
-    try {
-      final url = 'http://10.0.2.2:5000/update_profile'; // Replace with your API endpoint
-      String base64Image = base64Encode(await imageFile.readAsBytes());
-
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          'phone_number': phoneNumber,
-          'image': base64Image,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        // Profile picture updated successfully
-        print('Profile picture updated successfully');
-        // You can add further actions or display a success message here if needed
-      } else {
-        // Failed to update profile picture
-        print('Failed to update profile picture: ${response.body}');
-        // You can display an error message here if needed
-      }
-    } catch (e) {
-      // Error occurred during API call
-      print('Error occurred during API call: $e');
-      // You can display an error message here if needed
-    }
-  }
+  // // Update profile picture by sending image to the server
+  // Future<void> updateProfilePicture(File imageFile, String phoneNumber) async {
+  //   try {
+  //     final url = 'http://10.0.2.2:5000/update_profile'; // Replace with your API endpoint
+  //     String base64Image = base64Encode(await imageFile.readAsBytes());
+  //
+  //     final response = await http.post(
+  //       Uri.parse(url),
+  //       headers: {"Content-Type": "application/json"},
+  //       body: jsonEncode({
+  //         'phone_number': phoneNumber,
+  //         'image': base64Image,
+  //       }),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       // Profile picture updated successfully
+  //       print('Profile picture updated successfully');
+  //       // You can add further actions or display a success message here if needed
+  //     } else {
+  //       // Failed to update profile picture
+  //       print('Failed to update profile picture: ${response.body}');
+  //       // You can display an error message here if needed
+  //     }
+  //   } catch (e) {
+  //     // Error occurred during API call
+  //     print('Error occurred during API call: $e');
+  //     // You can display an error message here if needed
+  //   }
+  // }
 
   // Pick profile picture from gallery
   Future<void> _pickProfilePicture() async {
@@ -75,7 +75,7 @@ class _ChnageProfilePicState extends State<ChnageProfilePic> {
       });
 
       String? phoneNumber = context.read<UserProvider>().phoneNumber;
-      await updateProfilePicture(imageFile, phoneNumber!);
+      // await updateProfilePicture(imageFile, phoneNumber!);
     }
   }
 

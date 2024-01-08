@@ -15,6 +15,7 @@ class UserProvider extends ChangeNotifier {
   int? _status;
   File? _imageFile;
   double? _log = 0;
+  int? _otp;
 
 
   String? get name => _name;
@@ -29,6 +30,7 @@ class UserProvider extends ChangeNotifier {
   int? get status => _status;
   File? get imageFile => _imageFile;
   double? get log => _log;
+  int? get opt => _otp;
 
 
   void setImageFile(File file) {
@@ -88,6 +90,11 @@ class UserProvider extends ChangeNotifier {
 
   void setLog(double log) {
     _log = log;
+    notifyListeners();
+  }
+
+  void setOtp(int otp) {
+    _otp = otp;
     notifyListeners();
   }
 

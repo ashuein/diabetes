@@ -181,7 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Change Your Doctor',
+                          'Change Your Hospital',
                           style: GoogleFonts.inter(
                               textStyle: const TextStyle(
                                 fontSize: 16,

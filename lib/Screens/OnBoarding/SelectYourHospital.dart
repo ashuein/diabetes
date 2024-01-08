@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:diabetes_ms/Providers/UserInfo.dart';
 import 'package:diabetes_ms/Screens/OnBoarding/ProfilePic.dart';
 import 'package:diabetes_ms/Screens/Patient/HomeScreenP.dart';
@@ -38,6 +39,8 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
   // Function to add user data to the server
   Future<void> addUser() async {
 
+    Random random = Random();
+
     var name = context.read<UserProvider>().name;
     var phoneNumber = context.read<UserProvider>().phoneNumber;
     var dateOfBirth = context.read<UserProvider>().dateOfBirth;
@@ -47,6 +50,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
     var familyHistory = context.read<UserProvider>().familyHistory;
     var medicalCondition = context.read<UserProvider>().medicalCondition;
     var hospital_id = context.read<UserProvider>().hospitalid;
+    var otp = (1000 + random.nextInt(9000));
     // var profilepic = context.read<UserProvider>().imageFile;
     // var image = imageToBase64(profilepic!);
 
@@ -61,6 +65,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
       "bloodGroup": bloodGroup,
       "status": 0,
       "hospital_id": hospital_id,
+      "otp": otp,
       // "image": image,
     };
 
