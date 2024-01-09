@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../Components/Forms/ICFandICR.dart';
 import '../../Components/Graphs/BloodSugarGraph.dart';
 import '../../Components/Graphs/InuslinGraph.dart';
 import '../../Components/Log/BloodReport.dart';
@@ -19,6 +20,19 @@ class GraphScreenD extends StatefulWidget {
 }
 
 class _GraphScreenDState extends State<GraphScreenD> {
+
+  void openICFandICREntryDialog() {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+      ),
+      builder: (BuildContext context) {
+        return ICFandICR(patientNumber: widget.patientNumber,);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,6 +141,11 @@ class _GraphScreenDState extends State<GraphScreenD> {
                                 ),
                               );
                             },
+                          ),
+                          RoundedVerticalRectangle(
+                            icon: Image.asset('assets/images/cal.png'),
+                            heading: 'Change ICF and ICR',
+                            onTap: openICFandICREntryDialog,
                           ),
                         ],
                       ),

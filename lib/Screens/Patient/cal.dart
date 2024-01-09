@@ -1,6 +1,13 @@
+import 'package:diabetes_ms/Providers/UserInfo.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'recommended_page.dart'; // Import the RecommendedPage class
+import '../../Providers/UserInfo.dart';
+import '../../URL.dart';
+import 'recommended_page.dart';
+import 'dart:io';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Cal extends StatefulWidget {
   @override
@@ -33,7 +40,6 @@ class _CalState extends State<Cal> {
   bool isEditingTotalInsulinDose = false;
   bool isEditingElapsedTime = false;
   bool isEditingInsulinDuration = false;
-
   bool showPreviousIntakes = false;
   double? recommendedInsulin;
   String? savedTime;
@@ -41,45 +47,37 @@ class _CalState extends State<Cal> {
   @override
   void initState() {
     super.initState();
-    _loadSavedValues(); // Load saved values when the widget is created
+    fetchCurrIcrAndIcf(); // Load saved values when the widget is created
   }
 
-  // Load saved values from SharedPreferences
-  Future<void> _loadSavedValues() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      icf = prefs.getDouble('icf');
-      icr = prefs.getDouble('icr');
-      targetInsulinLevel = prefs.getDouble('targetInsulinLevel');
-      insulinDuration = prefs.getDouble('insulinDuration');
+  Future<void> fetchCurrIcrAndIcf() async {
 
-      icfController.text = icf?.toString() ?? '';
-      icrController.text = icr?.toString() ?? '';
-      targetInsulinController.text = targetInsulinLevel?.toString() ?? '';
-      insulinDurationController.text = insulinDuration?.toString() ?? '';
-      recommendedInsulin = prefs.getDouble('recommendedInsulin');
-      savedTime = prefs.getString('savedTime');
-    });
-  }
+    var number = context.read<UserProvider>().phoneNumber;
+    final String url = '${URL.baseUrl}/get_icr_icf/$number';
 
+    final response = await http.get(Uri.parse(url));
+    final data = json.decode(response.body);
 
-  // Save input values to SharedPreferences
-  Future<void> _saveValues() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (icfController.text.isNotEmpty)
-      await prefs.setDouble('icf', double.parse(icfController.text));
-    if (icrController.text.isNotEmpty)
-      await prefs.setDouble('icr', double.parse(icrController.text));
-    if (targetInsulinController.text.isNotEmpty)
-      await prefs.setDouble(
-          'targetInsulinLevel', double.parse(targetInsulinController.text));
-    if (insulinDurationController.text.isNotEmpty)
-      await prefs.setDouble(
-          'insulinDuration', double.parse(insulinDurationController.text));
+    if (response.statusCode == 200) {
+      var icr = data["records"][0][0];
+      var icf = data["records"][0][1];
+
+      setState(() {
+        icrController.text = icr ?? '';
+        icfController.text = icf ?? '';
+        this.icr = double.tryParse(icr);
+        this.icf = double.tryParse(icf);
+      });
+    } else {
+      print('Failed to fetch data. Error: ${response.statusCode}');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+
+    print(icrController.text);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -92,13 +90,16 @@ class _CalState extends State<Cal> {
         ),
         centerTitle: true,
         elevation: 0,
+        iconTheme: IconThemeData(
+          color: Color(0xFF6373CC),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
           color: Colors.white,
           padding: EdgeInsets.all(20),
           child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             SizedBox(height: 20),
             Text(
               'Carbohydrates Intake',
@@ -129,7 +130,7 @@ class _CalState extends State<Cal> {
             SizedBox(height: 10),
             TextField(
               controller:
-              sugarLevelController, // Added controller for sugarLevel
+                  sugarLevelController, // Added controller for sugarLevel
               decoration: InputDecoration(
                 hintText: 'Enter the present Sugar Level',
                 hintStyle: TextStyle(fontSize: 14),
@@ -154,7 +155,7 @@ class _CalState extends State<Cal> {
                 });
               },
               items: <String>['No', 'Yes'].map<DropdownMenuItem<String>>(
-                    (String value) {
+                (String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
@@ -227,10 +228,24 @@ class _CalState extends State<Cal> {
               icfController,
               icf,
               isEditingICF,
-                  () {
-                setState(() {
-                  isEditingICF = !isEditingICF;
-                });
+              () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Insulin Correction Factor (ICF)'),
+                      content: Text('Only Doctors Can Change This.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Close'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
             SizedBox(height: 20),
@@ -239,10 +254,23 @@ class _CalState extends State<Cal> {
               icrController,
               icr,
               isEditingICR,
-                  () {
-                setState(() {
-                  isEditingICR = !isEditingICR;
-                });
+              () {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Insulin Carbohydrate Ratio (ICR)'),
+                        content: Text('Only Doctors Can Change This.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Close'),
+                          ),
+                        ],
+                      );
+                    });
               },
             ),
             SizedBox(height: 20),
@@ -251,7 +279,7 @@ class _CalState extends State<Cal> {
               targetInsulinController,
               targetInsulinLevel,
               isEditingTargetInsulin,
-                  () {
+              () {
                 setState(() {
                   isEditingTargetInsulin = !isEditingTargetInsulin;
                 });
@@ -299,7 +327,7 @@ class _CalState extends State<Cal> {
               insulinDurationController,
               insulinDuration,
               isEditingInsulinDuration,
-                  () {
+              () {
                 setState(() {
                   isEditingInsulinDuration = !isEditingInsulinDuration;
                 });
@@ -310,8 +338,6 @@ class _CalState extends State<Cal> {
               child: ElevatedButton(
                 onPressed: () async {
                   final localContext = context; // Store the context
-
-                  await _saveValues(); // Save the input values before navigating
 
                   try {
                     // Get the necessary values from your state or controllers
@@ -332,18 +358,18 @@ class _CalState extends State<Cal> {
                           activityIntensity: activityIntensity,
                           currentSugarLevel: currentSugarLevel,
                           targetSugarLevel:
-                          double.tryParse(targetInsulinController.text) ??
-                              100.0,
+                              double.tryParse(targetInsulinController.text) ??
+                                  100.0,
                           isf: double.tryParse(icfController.text) ?? 0.0,
                           totalInsulinDose: double.tryParse(
-                              totalInsulinDoseController.text) ??
+                                  totalInsulinDoseController.text) ??
                               0.0,
                           elapsedTime:
-                          double.tryParse(elapsedTimeController.text) ??
-                              0.0,
+                              double.tryParse(elapsedTimeController.text) ??
+                                  0.0,
                           insulinDuration:
-                          double.tryParse(insulinDurationController.text) ??
-                              1.0,
+                              double.tryParse(insulinDurationController.text) ??
+                                  1.0,
                         ),
                       ),
                     );
@@ -387,69 +413,69 @@ class _CalState extends State<Cal> {
               ),
             ),
             SizedBox(height: 20),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      showPreviousIntakes = !showPreviousIntakes;
-                    });
-                  },
-                  child: Text(
-                    'Show Previous Intakes',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                IconButton(
-                  onPressed: () {
-                    // Refresh the page when the refresh button is pressed
-                    setState(() {
-                      _loadSavedValues(); // Reload saved values
-                      showPreviousIntakes =
-                      false; // Hide the previous intakes section
-                    });
-                  },
-                  icon: Icon(
-                    Icons.refresh,
-                    color: Colors.blue,
-                    size: 20,
-                  ),
-                ),
-              ],
-            ),
-            if (showPreviousIntakes) ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Previous Intakes:',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text('ICF: ${icf ?? "N/A"}'),
-                      Text('ICR: ${icr ?? "N/A"}'),
-                      Text(
-                          'Target Insulin Level: ${targetInsulinLevel ?? "N/A"}'),
-                      Text('Insulin Duration: ${insulinDuration ?? "N/A"}'),
-                      Text(
-                          'Recommended Insulin: ${recommendedInsulin ?? "N/A"}'),
-                      Text('Saved Time: ${savedTime ?? "N/A"}'),
-                      // You can add more saved values here
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            // Code to show previous data...
+
+            // Row(
+            //   children: [
+            //     TextButton(
+            //       onPressed: () {
+            //         setState(() {
+            //           showPreviousIntakes = !showPreviousIntakes;
+            //         });
+            //       },
+            //       child: Text(
+            //         'Show Previous Intakes',
+            //         style: TextStyle(
+            //           color: Colors.blue,
+            //           decoration: TextDecoration.underline,
+            //         ),
+            //       ),
+            //     ),
+            //     SizedBox(width: 10),
+            //     IconButton(
+            //       onPressed: () {
+            //         // Refresh the page when the refresh button is pressed
+            //         setState(() {
+            //           showPreviousIntakes = false; // Hide the previous intakes section
+            //         });
+            //       },
+            //       icon: Icon(
+            //         Icons.refresh,
+            //         color: Colors.blue,
+            //         size: 20,
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            // if (showPreviousIntakes) ...[
+            //   Card(
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(16.0),
+            //       child: Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: [
+            //           Text(
+            //             'Previous Intakes:',
+            //             style: TextStyle(
+            //               fontSize: 16,
+            //               fontWeight: FontWeight.bold,
+            //             ),
+            //           ),
+            //           SizedBox(height: 10),
+            //           Text('ICF: ${icf ?? "N/A"}'),
+            //           Text('ICR: ${icr ?? "N/A"}'),
+            //           Text(
+            //               'Target Insulin Level: ${targetInsulinLevel ?? "N/A"}'),
+            //           Text('Insulin Duration: ${insulinDuration ?? "N/A"}'),
+            //           Text(
+            //               'Recommended Insulin: ${recommendedInsulin ?? "N/A"}'),
+            //           Text('Saved Time: ${savedTime ?? "N/A"}'),
+            //           // You can add more saved values here
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ],
           ]),
         ),
       ),
@@ -457,12 +483,12 @@ class _CalState extends State<Cal> {
   }
 
   Widget _buildEditableValueField(
-      String label,
-      TextEditingController controller,
-      double? value,
-      bool isEditing,
-      VoidCallback onEdit,
-      ) {
+    String label,
+    TextEditingController controller,
+    double? value,
+    bool isEditing,
+    VoidCallback onEdit,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

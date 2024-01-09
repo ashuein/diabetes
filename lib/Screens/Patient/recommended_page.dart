@@ -48,19 +48,15 @@ class _RecommendedPageState extends State<RecommendedPage> {
     }
 
     double activityDose = doseForMeal * activityPercentage;
-    double correctionDose =
-        (widget.currentSugarLevel - widget.targetSugarLevel) / widget.isf;
-    double insulinOnBoard = widget.totalInsulinDose *
-        (1 - widget.elapsedTime / widget.insulinDuration);
-
-    double bolusDose =
-        doseForMeal + correctionDose - activityDose - insulinOnBoard;
+    double correctionDose = (widget.currentSugarLevel - widget.targetSugarLevel) / widget.isf;
+    double insulinOnBoard = widget.totalInsulinDose * (1 - widget.elapsedTime / widget.insulinDuration);
+    double bolusDose = doseForMeal + correctionDose - activityDose - insulinOnBoard;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white10,
+        backgroundColor: Colors.white,
         title: Text(
-          'Recommended Insulin',
+          'Results',
           style: TextStyle(
             color: Color(0xFF6373CC),
             fontWeight: FontWeight.bold,
@@ -69,7 +65,7 @@ class _RecommendedPageState extends State<RecommendedPage> {
         centerTitle: true,
         elevation: 0,
         iconTheme: IconThemeData(
-          color: Color(0xFF6373CC), // Change the back button color
+          color: Color(0xFF6373CC),
         ),
       ),
       body: SingleChildScrollView(
@@ -217,43 +213,6 @@ class _RecommendedPageState extends State<RecommendedPage> {
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
-                ),
-              ),
-              SizedBox(height: 20),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
-
-                    DateTime now = DateTime.now();
-                    String savedTime =
-                        "${now.year}-${now.month}-${now.day} ${now.hour}:${now.minute}:${now.second}";
-
-                    prefs.setDouble('recommendedInsulin', bolusDose);
-                    prefs.setString('savedTime', savedTime);
-
-                    setState(() {
-                      recommendedInsulin = bolusDose;
-                    });
-
-                    // Pass the saved values back to MainPage when popping the route
-                    Navigator.pop(context, {
-                      'recommendedInsulin': bolusDose,
-                      'savedTime': savedTime,
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFF86851),
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: Text(
-                    'Save',
-                    style: TextStyle(fontSize: 16),
-                  ),
                 ),
               ),
             ],
