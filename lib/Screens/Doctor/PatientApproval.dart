@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../URL.dart';
 import '../Patient/HomeScreenP.dart';
 import 'HomeScreenD.dart';
 
@@ -38,7 +39,7 @@ class _ApprovalState extends State<Approval> {
 
   // Function to fetch user data from the server
   Future<void> fetchUserData(phoneNumber) async {
-    final url = 'http://10.0.2.2:5000/get_doctors_by_number/$phoneNumber';
+    final url = '${URL.baseUrl}/get_doctors_by_number/$phoneNumber';
     try {
       final response = await http.get(Uri.parse(url));
       final data = json.decode(response.body);
@@ -53,9 +54,8 @@ class _ApprovalState extends State<Approval> {
   // Function to fetch pending patients data for the doctor
   Future<List<Map<String, dynamic>>> _fetchPatientsData(doctorId) async {
     if (doctorId != null && doctorId.isNotEmpty) {
-      final url = 'http://10.0.2.2:5000/pending_patients/$doctorId';
+      final url = '${URL.baseUrl}/pending_patients/$doctorId';
       final response = await http.get(Uri.parse(url));
-      print(url);
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -159,7 +159,7 @@ class _ApprovalState extends State<Approval> {
 
                       // Function to handle the correct icon click
                       Future<void> onCorrectIconClick() async {
-                        final apiUrl = 'http://10.0.2.2:5000/update_status1';
+                        final apiUrl = '${URL.baseUrl}/update_status1';
                         final headers = {'Content-Type': 'application/json'};
                         final body = json.encode({'phone_number': phoneNumber});
                         try {
@@ -181,7 +181,7 @@ class _ApprovalState extends State<Approval> {
                       // Function to handle the wrong icon click
                       Future<void> onWrongIconClick() async {
                         // Implement your logic when the wrong icon is clicked
-                        final apiUrl = 'http://10.0.2.2:5000/update_status2';
+                        final apiUrl = '${URL.baseUrl}/update_status2';
                         final headers = {'Content-Type': 'application/json'};
                         final body = json.encode({'phone_number': phoneNumber});
 

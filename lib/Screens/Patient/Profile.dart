@@ -1,9 +1,10 @@
 import 'package:diabetes_ms/Screens/Patient/ChangeProfilePic.dart';
 import 'package:diabetes_ms/Screens/OnBoarding/ProfilePic.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Providers/UserInfo.dart';
 import 'ChangeHospital.dart';
 
@@ -14,6 +15,14 @@ class ProfilePage extends StatefulWidget {
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
+
+Future<void> logOut() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('onboardingCompleted', false);
+  UserProvider userProvider = UserProvider();
+  userProvider.clearUserData();
+}
+
 
 class _ProfilePageState extends State<ProfilePage> {
   @override
@@ -47,34 +56,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
                 SizedBox(height: 50,),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChnageProfilePic(),
-                      ),
-                    );
-                  },
-                  child: Consumer<UserProvider>(
-                    builder: (context, imageProvider, _) {
-                      if (imageProvider.imageFile == null) {
-                        return const CircleAvatar(
-                          radius: 150,
-                          backgroundImage: AssetImage(
-                              'assets/images/default_profile_pic.png'),
-                        );
-                      } else {
-                        return CircleAvatar(
-                            radius: 150,
-                            backgroundImage:
-                            FileImage(imageProvider.imageFile!)
-                            as ImageProvider);
-                      }
-                    },
-                  ),
-                ),
-                SizedBox(height: 20,),
                 Consumer<UserProvider>(
                   builder: (context, userProvider, _) {
                     return Container(
@@ -102,7 +83,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   builder: (context, userProvider, _) {
                     Color textColor;
                     String statusText;
-
                     // Determine the text color and status text based on user's status
                     switch (userProvider.status) {
                       case 0:
@@ -182,6 +162,40 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         Text(
                           'Change Your Hospital',
+                          style: GoogleFonts.inter(
+                              textStyle: const TextStyle(
+                                fontSize: 16,
+                              )),
+                        ),
+                        Icon(Icons.arrow_forward_ios),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 30,),
+                ElevatedButton(
+                  onPressed: (){
+                    logOut();
+                    SystemNavigator.pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff6373CC),
+                    textStyle: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    minimumSize:
+                    Size(MediaQuery.of(context).size.width, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal:20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Log Out',
                           style: GoogleFonts.inter(
                               textStyle: const TextStyle(
                                 fontSize: 16,

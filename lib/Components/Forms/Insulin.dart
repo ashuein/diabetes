@@ -134,7 +134,7 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
                       height: 10,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Flexible(
                           child: ElevatedButton(
@@ -150,8 +150,11 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
-                                minimumSize: const Size(100, 40)),
+                                minimumSize: const Size(65, 35)),
                           ),
+                        ),
+                        SizedBox(
+                          width: 10,
                         ),
                         Flexible(
                           child: ElevatedButton(
@@ -167,8 +170,11 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
-                                minimumSize: const Size(100, 40)),
+                                minimumSize: const Size(75, 35)),
                           ),
+                        ),
+                        SizedBox(
+                          width: 10,
                         ),
                         Flexible(
                           child: ElevatedButton(
@@ -183,7 +189,7 @@ class _InsulinEntryBottomSheetState extends State<InsulinEntryBottomSheet> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
                                 ),
-                                minimumSize: const Size(100, 40)),
+                                minimumSize: const Size(75, 35)),
                             child: const Text('Correction Dose',textAlign: TextAlign.center,),
                           ),
                         ),

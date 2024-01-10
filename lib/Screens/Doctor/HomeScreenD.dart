@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../URL.dart';
 import 'DoctorGraphScreen.dart';
 
 class HomeScreenD extends StatefulWidget {
@@ -39,7 +40,7 @@ class _HomeScreenDState extends State<HomeScreenD> {
 
   // Function to fetch user data from the server
   Future<void> fetchUserData(phoneNumber) async {
-    final url = 'http://10.0.2.2:5000/get_doctors_by_number/$phoneNumber';
+    final url = '${URL.baseUrl}/get_doctors_by_number/$phoneNumber';
     try {
       final response = await http.get(Uri.parse(url));
       final data = json.decode(response.body);
@@ -58,7 +59,7 @@ class _HomeScreenDState extends State<HomeScreenD> {
       return Future.value([]);
     }
 
-    final url = 'http://10.0.2.2:5000/approved_patients/$doctorId';
+    final url = '${URL.baseUrl}/approved_patients/$doctorId';
     final response = await http.get(Uri.parse(url));
 
 

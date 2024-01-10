@@ -39,8 +39,10 @@ class _GraphScreenDState extends State<GraphScreenD> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(15.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
                   children: [
@@ -51,9 +53,12 @@ class _GraphScreenDState extends State<GraphScreenD> {
                         Navigator.pop(context);
                       },
                     ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.2,
+                    ),
                     Center(
                       child: Text(
-                        "Select Your Graph",
+                        "Toolkit",
                         style: GoogleFonts.inter(
                           textStyle: TextStyle(
                             color: Color(0xff6373CC),
@@ -65,92 +70,94 @@ class _GraphScreenDState extends State<GraphScreenD> {
                     ),
                   ],
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 50, left: 8),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          RoundedVerticalRectangle(
-                            icon: Image.asset('assets/images/sugar.png'),
-                            heading: 'Blood Sugar',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BloodSugarGraph(patientNumber: widget.patientNumber,),
-                                ),
-                              );
-                            },
+                SizedBox(
+                  height: 35,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        RoundedVerticalRectangle(
+                          icon: Image.asset('assets/images/sugar.png'),
+                          heading: 'Blood Sugar',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BloodSugarGraph(patientNumber: widget.patientNumber,),
+                              ),
+                            );
+                          },
+                        ),
+                        RoundedVerticalRectangle(
+                          icon: Image.asset(
+                            'assets/images/insulin.png',
                           ),
-                          RoundedVerticalRectangle(
-                            icon: Image.asset(
-                              'assets/images/insulin.png',
-                            ),
-                            heading: 'Insulin Taken',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => InsulinGraph(patientNumber: widget.patientNumber,),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          RoundedVerticalRectangle(
-                            icon: Image.asset('assets/images/meal.png'),
-                            heading: 'Meal Intake',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MealIntakeLog(patientNumber: widget.patientNumber),
-                                ),
-                              );
-                            },
-                          ),
-                          RoundedVerticalRectangle(
-                            icon: Image.asset(
-                                'assets/images/physical_activity.png'),
-                            heading: 'Physical Activity',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PhysicalActivityLog(patientNumber: widget.patientNumber),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          RoundedVerticalRectangle(
-                            icon: Image.asset('assets/images/blood.png'),
-                            heading: 'Blood Report',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BloodReport(patientNumber: widget.patientNumber),
-                                ),
-                              );
-                            },
-                          ),
-                          RoundedVerticalRectangle(
-                            icon: Image.asset('assets/images/cal.png'),
-                            heading: 'Change ICF and ICR',
-                            onTap: openICFandICREntryDialog,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                          heading: 'Insulin Taken',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => InsulinGraph(patientNumber: widget.patientNumber,),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        RoundedVerticalRectangle(
+                          icon: Image.asset('assets/images/meal.png'),
+                          heading: 'Meal Intake',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MealIntakeLog(patientNumber: widget.patientNumber),
+                              ),
+                            );
+                          },
+                        ),
+                        RoundedVerticalRectangle(
+                          icon: Image.asset(
+                              'assets/images/physical_activity.png'),
+                          heading: 'Physical Activity',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PhysicalActivityLog(patientNumber: widget.patientNumber),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        RoundedVerticalRectangle(
+                          icon: Image.asset('assets/images/blood.png'),
+                          heading: 'Blood Report',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BloodReport(patientNumber: widget.patientNumber),
+                              ),
+                            );
+                          },
+                        ),
+                        RoundedVerticalRectangle(
+                          icon: Image.asset('assets/images/cal.png'),
+                          heading: 'Change ICF and ICR',
+                          onTap: openICFandICREntryDialog,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),

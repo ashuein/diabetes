@@ -98,4 +98,23 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  void clearUserData() {
+    _name = '';
+    _phoneNumber = null;
+    _dateOfBirth = null;
+    _gender = null;
+    _city = null;
+    _medicalCondition = null;
+    _familyHistory = null;
+    _bloodGroup = null;
+    _hospitalid = null;
+    _status = null;
+    _imageFile = null;
+    _log = 0;
+    _otp = null;
+
+    notifyListeners();
+  }
+
 }

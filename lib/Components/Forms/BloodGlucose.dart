@@ -120,6 +120,9 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
                     });
                 },
               ),
+              SizedBox(
+                height: 10,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
@@ -130,7 +133,7 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
                       height: 10,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         ElevatedButton(
                           onPressed: () => _onMealSelected("Before"),
@@ -145,7 +148,7 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              minimumSize: const Size(100, 40)),
+                              minimumSize: const Size(75, 35)),
                         ),
                         ElevatedButton(
                           onPressed: () => _onMealSelected("After"),
@@ -160,7 +163,7 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              minimumSize: const Size(100, 40)),
+                              minimumSize: const Size(75, 35)),
                         ),
                         ElevatedButton(
                           onPressed: () => _onMealSelected("Low Sugar"),
@@ -174,7 +177,7 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              minimumSize: const Size(100, 40)),
+                              minimumSize: const Size(75, 35)),
                           child: const Text('Low Sugar'),
                         ),
                       ],

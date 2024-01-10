@@ -66,23 +66,30 @@ class _InsulinGraphState extends State<InsulinGraph> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "Insulin Taken Statistics",
-              style: GoogleFonts.inter(
-                textStyle: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xff6373CC),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                "Insulin Taken Statistics",
+                style: GoogleFonts.inter(
+                  textStyle: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff6373CC),
+                  ),
                 ),
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.info_outlined),
-              onPressed: () => showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return ColorBlocksDialog();
-                },
+            Expanded(
+              child: Container(
+                child: IconButton(
+                  icon: Icon(Icons.info_outlined),
+                  onPressed: () => showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ColorBlocksDialog();
+                    },
+                  ),
+                ),
               ),
             ),
           ],
@@ -352,51 +359,51 @@ class _InsulinGraphState extends State<InsulinGraph> {
           dataSource: chartData,
           xValueMapper: (ChartData data, _) => data.dateTime,
           yValueMapper: (ChartData data, _) => data.insulin,
-          dataLabelSettings: DataLabelSettings(
-            isVisible: true,
-            labelAlignment: ChartDataLabelAlignment.auto,
-            builder: (dynamic data, dynamic point, dynamic series,
-                int dataIndex, int pointIndex) {
-              if (data is ChartData) {
-                // Format the date as "dd/MM/yyyy"
-                var dateFormatter = DateFormat('dd/MM/yyyy');
-                String formattedDate = dateFormatter.format(data.dateTime);
-
-                final String customLabel =
-                    '$formattedDate \n ${data.insulin
-                    .toInt()}';
-
-                var Boxcolor = Colors.black87;
-                if (data.label == 'Before') {
-                  Boxcolor = Colors.teal;
-                } else if (data.label == 'After') {
-                  Boxcolor = Colors.deepPurpleAccent;
-                } else {
-                  Boxcolor = Colors.lightBlue;
-                }
-
-                return Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: Boxcolor,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Text(
-                    customLabel,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.inter(
-                      textStyle: const TextStyle(
-                        fontSize: 8,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                );
-              }
-              return Container();
-            },
-          ),
+          // dataLabelSettings: DataLabelSettings(
+          //   isVisible: true,
+          //   labelAlignment: ChartDataLabelAlignment.auto,
+          //   builder: (dynamic data, dynamic point, dynamic series,
+          //       int dataIndex, int pointIndex) {
+          //     if (data is ChartData) {
+          //       // Format the date as "dd/MM/yyyy"
+          //       var dateFormatter = DateFormat('dd/MM/yyyy');
+          //       String formattedDate = dateFormatter.format(data.dateTime);
+          //
+          //       final String customLabel =
+          //           '$formattedDate \n ${data.insulin
+          //           .toInt()}';
+          //
+          //       var Boxcolor = Colors.black87;
+          //       if (data.label == 'Before') {
+          //         Boxcolor = Colors.teal;
+          //       } else if (data.label == 'After') {
+          //         Boxcolor = Colors.deepPurpleAccent;
+          //       } else {
+          //         Boxcolor = Colors.lightBlue;
+          //       }
+          //
+          //       return Container(
+          //         padding: const EdgeInsets.all(5),
+          //         decoration: BoxDecoration(
+          //           color: Boxcolor,
+          //           borderRadius: BorderRadius.circular(5),
+          //         ),
+          //         child: Text(
+          //           customLabel,
+          //           textAlign: TextAlign.center,
+          //           style: GoogleFonts.inter(
+          //             textStyle: const TextStyle(
+          //               fontSize: 8,
+          //               fontWeight: FontWeight.bold,
+          //               color: Colors.white,
+          //             ),
+          //           ),
+          //         ),
+          //       );
+          //     }
+          //     return Container();
+          //   },
+          // ),
           markerSettings: const MarkerSettings(
             isVisible: true,
             shape: DataMarkerType.circle,

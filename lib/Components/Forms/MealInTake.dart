@@ -144,50 +144,62 @@ class _MealIntakeEntryBottomSheetState extends State<MealIntakeEntryBottomSheet>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ElevatedButton(
-                          onPressed: () => _onMealSelected("Light"),
-                          child: const Text('Light'),
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: mealType == "Light"
-                                  ? Colors.white
-                                  : const Color(0xff6373CC),
-                              backgroundColor: mealType == "Light"
-                                  ? const Color(0xffF86851)
-                                  : const Color(0xffD9D9D9),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              minimumSize: const Size(100, 40)),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: () => _onMealSelected("Light"),
+                            child: const Text('Light'),
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: mealType == "Light"
+                                    ? Colors.white
+                                    : const Color(0xff6373CC),
+                                backgroundColor: mealType == "Light"
+                                    ? const Color(0xffF86851)
+                                    : const Color(0xffD9D9D9),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                minimumSize: const Size(100, 40)),
+                          ),
                         ),
-                        ElevatedButton(
-                          onPressed: () => _onMealSelected("Moderate"),
-                          child: const Text('Moderate'),
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: mealType == "Moderate"
-                                  ? Colors.white
-                                  : const Color(0xff6373CC),
-                              backgroundColor: mealType == "Moderate"
-                                  ? const Color(0xffF86851)
-                                  : const Color(0xffD9D9D9),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              minimumSize: const Size(100, 40)),
+                        SizedBox(
+                          width: 10,
                         ),
-                        ElevatedButton(
-                          onPressed: () => _onMealSelected("Heavy"),
-                          style: ElevatedButton.styleFrom(
-                              foregroundColor: mealType == "Heavy"
-                                  ? Colors.white
-                                  : const Color(0xff6373CC),
-                              backgroundColor: mealType == "Heavy"
-                                  ? const Color(0xffF86851)
-                                  : const Color(0xffD9D9D9),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              minimumSize: const Size(100, 40)),
-                          child: const Text('Heavy'),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: () => _onMealSelected("Moderate"),
+                            child: const Text('Moderate'),
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: mealType == "Moderate"
+                                    ? Colors.white
+                                    : const Color(0xff6373CC),
+                                backgroundColor: mealType == "Moderate"
+                                    ? const Color(0xffF86851)
+                                    : const Color(0xffD9D9D9),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                minimumSize: const Size(100, 40)),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Flexible(
+                          child: ElevatedButton(
+                            onPressed: () => _onMealSelected("Heavy"),
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: mealType == "Heavy"
+                                    ? Colors.white
+                                    : const Color(0xff6373CC),
+                                backgroundColor: mealType == "Heavy"
+                                    ? const Color(0xffF86851)
+                                    : const Color(0xffD9D9D9),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                minimumSize: const Size(100, 40)),
+                            child: const Text('Heavy'),
+                          ),
                         ),
                       ],
                     ),

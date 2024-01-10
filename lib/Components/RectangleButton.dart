@@ -14,8 +14,8 @@ class RoundedVerticalRectangle extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Container(
-          width: 150,
-          height: 150,
+          width: MediaQuery.of(context).size.width * 0.40,
+          height: MediaQuery.of(context).size.width * 0.35,
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
               color: Color(0xffF86851), // Change the color as per your preference

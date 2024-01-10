@@ -6,6 +6,7 @@ import 'package:diabetes_ms/Components/Forms/Insulin.dart';
 import 'package:diabetes_ms/Components/Forms/MealInTake.dart';
 import 'package:diabetes_ms/Screens/OnBoarding/ProfilePic.dart';
 import 'package:diabetes_ms/Screens/Patient/Profile.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:diabetes_ms/Providers/UserInfo.dart';
@@ -37,6 +38,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
   String _profilePicturePath = '';
   double _progress = 0;
   late DateTime _lastDate;
+  bool isloading = false;
 
   double insulinAverage = 0;
   double carbsAverage = 0;
@@ -56,6 +58,9 @@ class _HomeScreenPState extends State<HomeScreenP> {
 
   // Function to mark onboarding as completed
   Future<void> OnBoaringCompleted() async {
+    setState(() {
+      isloading = true;
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboardingCompleted', true);
     phoneNumber = prefs.getString('phoneNumber') ?? "";
@@ -76,7 +81,6 @@ class _HomeScreenPState extends State<HomeScreenP> {
 
   // Fetch user data from the server
   Future<void> fetchUserData(phoneNumber) async {
-
     // Make a GET request to fetch user data
     // Set Provider values based on fetched data
     final url = '${URL.baseUrl}/get_users/$phoneNumber';
@@ -97,6 +101,9 @@ class _HomeScreenPState extends State<HomeScreenP> {
       context.read<UserProvider>().setStatus(int.parse(data['status']));
       // File profilePicFile = base64ToFile(data['profilepic']);
       // context.read<UserProvider>().setImageFile(profilePicFile);
+      setState(() {
+        isloading = false;
+      });
     } catch (error) {
       print(error);
     }
@@ -246,11 +253,6 @@ class _HomeScreenPState extends State<HomeScreenP> {
 
       setState(() { });
 
-      // print(insulinAverage);
-      // print(carbsAverage);
-      // print(recent_activity);
-
-      // print('Data from server: ${response.body}');
     } else {
       print('Failed to fetch data. Error: ${response.statusCode}');
     }
@@ -261,205 +263,229 @@ class _HomeScreenPState extends State<HomeScreenP> {
 
     final user = Provider.of<UserProvider>(context);
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Consumer<UserProvider>(
-                          builder: (context, userProvider, _) {
-                            String? firstName = userProvider.name;
-                            if (firstName != null) {
-                              List<String> nameParts = firstName.split(' ');
-                              firstName = nameParts.first;
-                            }
+    return WillPopScope(
+      onWillPop: () async {
+        SystemNavigator.pop();
+        return true;
+      },
+      child: isloading ? Container(
+        height: MediaQuery.of(context).size.height,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(
+                color:Color(0xffF86851),
+              ),
+            ],
+          ),
+        ),
+      ) :  Scaffold(
+        body: SingleChildScrollView(
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Consumer<UserProvider>(
+                            builder: (context, userProvider, _) {
+                              String? firstName = userProvider.name;
+                              if (firstName != null) {
+                                List<String> nameParts = firstName.split(' ');
+                                firstName = nameParts.first;
+                              }
 
-                            return Container(
-                              padding: EdgeInsets.zero,
-                              child: FittedBox(
-                                alignment: Alignment.centerLeft,
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  "Welcome, ${userProvider.name} !",
-                                  textAlign: TextAlign.left,
-                                  style: GoogleFonts.inter(
-                                    textStyle: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff6373CC),
+                              return Container(
+                                padding: EdgeInsets.zero,
+                                child: FittedBox(
+                                  alignment: Alignment.centerLeft,
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    "Welcome, ${userProvider.name} !",
+                                    textAlign: TextAlign.left,
+                                    style: GoogleFonts.inter(
+                                      textStyle: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xff6373CC),
+                                      ),
                                     ),
                                   ),
                                 ),
+                              );
+                            },
+                          ),
+                          const SizedBox(
+                            height: 3,
+                          ),
+                          Text(
+                            "Take charge of your health.",
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.inter(
+                              textStyle: TextStyle(
+                                fontSize: 16,
+                                color: Color(0xffF86851),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Flexible(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfilePage(),
                               ),
                             );
                           },
+                          child: Icon(Icons.settings,size: 35,color: Color(0xff6373CC),)
                         ),
-                        const SizedBox(
-                          height: 3,
-                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 3,
+                  ),
+                Card(
+                  elevation: 3.0,
+                  margin: EdgeInsets.only(top: 25.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0), // Adjust the radius as needed
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(18.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: 3,),
                         Text(
-                          "Take charge of your health.",
-                          textAlign: TextAlign.left,
-                          style: GoogleFonts.inter(
+                          "Today's Summary",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
                             textStyle: TextStyle(
-                              fontSize: 16,
-                              color: Color(0xffF86851),
+                              fontSize: 20,
+                              color: Color(0xff6373CC),
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
+                        SizedBox(height: 18.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            SummarySection(
+                              label: "Average Insulin",
+                              value: insulinAverage.toString(),
+                            ),
+                            SizedBox(width: 16.0,),
+                            SummarySection(
+                              label: "Average Carbs Intake",
+                              value: carbsAverage.toString(),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10.0),
+                        SummarySection2(
+                          label: "Recent Activity",
+                          value: recent_activity,
+                        ),
                       ],
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfilePage(),
-                          ),
-                        );
-                      },
-                      child: Icon(Icons.settings,size: 30,)
-                    ),
-                  ],
+                  ),
                 ),
-                const SizedBox(
-                  height: 3,
-                ),
-              Card(
-                elevation: 3.0,
-                margin: EdgeInsets.only(top: 25.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0), // Adjust the radius as needed
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(18.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SizedBox(height: 3,),
-                      Text(
-                        "Today's Summary",
-                          textAlign: TextAlign.center,
+                Container(
+                    margin: EdgeInsets.only(top: 35, left: 10, right: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Track",
                           style: GoogleFonts.inter(
-                          textStyle: TextStyle(
-                            fontSize: 20,
-                            color: Color(0xff6373CC),
-                            fontWeight: FontWeight.bold,
+                            textStyle: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 18.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SummarySection(
-                            label: "Average Insulin",
-                            value: insulinAverage.toString(),
-                          ),
-                          SizedBox(width: 16.0,),
-                          SummarySection(
-                            label: "Average Carbs Intake",
-                            value: carbsAverage.toString(),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10.0),
-                      SummarySection2(
-                        label: "Recent Activity",
-                        value: recent_activity,
-                      ),
-                    ],
-                  ),
-                ),
+                        Column(
+                          children: [
+                            CustomListTile(
+                              leadingIcon: Image.asset('assets/images/sugar.png'),
+                              heading: 'Blood Sugar',
+                              subheading: 'Keep Track of Your Blood Sugar Readings',
+                              trailingIcon: Icons.add_box_rounded,
+                              onTap: openBloodSugarEntryDialog,
+                            ),
+                            CustomListTile(
+                              leadingIcon: Image.asset('assets/images/insulin.png'),
+                              heading: 'Insulin Taken',
+                              subheading: 'Keep a Record of Your Insulin Intake',
+                              trailingIcon: Icons.add_box_rounded,
+                              onTap: openInsulinEntryDialog,
+                            ),
+                            CustomListTile(
+                              leadingIcon: Image.asset('assets/images/meal.png'),
+                              heading: 'Meal Intake',
+                              subheading: 'Keep Track of Your Daily Meal Intake',
+                              trailingIcon: Icons.add_box_rounded,
+                              onTap:openMealIntakeEntryDialog,
+                            ),
+                            CustomListTile(
+                              leadingIcon: Image.asset('assets/images/physical_activity.png'),
+                              heading: 'Physical Activity',
+                              subheading: 'Record Your physical activity',
+                              trailingIcon: Icons.add_box_rounded,
+                              onTap: openActivityEntryDialog,
+                            ),
+                            CustomListTile(
+                              leadingIcon: Image.asset('assets/images/blood.png'),
+                              heading: 'Blood Report',
+                              subheading: 'Record Your Blood Test Results',
+                              trailingIcon: Icons.add_box_rounded,
+                              onTap: openBloodReportEntryDialog,
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  )
+                ],
               ),
-              Container(
-                  margin: EdgeInsets.only(top: 35, left: 10, right: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Track",
-                        style: GoogleFonts.inter(
-                          textStyle: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          CustomListTile(
-                            leadingIcon: Image.asset('assets/images/sugar.png'),
-                            heading: 'Blood Sugar',
-                            subheading: 'Keep Track of Your Blood Sugar Readings',
-                            trailingIcon: Icons.add_box_rounded,
-                            onTap: openBloodSugarEntryDialog,
-                          ),
-                          CustomListTile(
-                            leadingIcon: Image.asset('assets/images/insulin.png'),
-                            heading: 'Insulin Taken',
-                            subheading: 'Keep a Record of Your Insulin Intake',
-                            trailingIcon: Icons.add_box_rounded,
-                            onTap: openInsulinEntryDialog,
-                          ),
-                          CustomListTile(
-                            leadingIcon: Image.asset('assets/images/meal.png'),
-                            heading: 'Meal Intake',
-                            subheading: 'Keep Track of Your Daily Meal Intake',
-                            trailingIcon: Icons.add_box_rounded,
-                            onTap:openMealIntakeEntryDialog,
-                          ),
-                          CustomListTile(
-                            leadingIcon: Image.asset('assets/images/physical_activity.png'),
-                            heading: 'Physical Activity',
-                            subheading: 'Record Your physical activity',
-                            trailingIcon: Icons.add_box_rounded,
-                            onTap: openActivityEntryDialog,
-                          ),
-                          CustomListTile(
-                            leadingIcon: Image.asset('assets/images/blood.png'),
-                            heading: 'Blood Report',
-                            subheading: 'Record Your Blood Test Results',
-                            trailingIcon: Icons.add_box_rounded,
-                            onTap: openBloodReportEntryDialog,
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                )
-              ],
             ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor:Color(0xff6373CC),
-        onPressed: () {
-          // Navigate to another page when the floating button is pressed.
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => GraphScreen()),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Icon(Icons.stacked_bar_chart_sharp),
-              Text('Stats',style: TextStyle(fontSize: 12),),
-            ],
+        floatingActionButton: FloatingActionButton(
+          backgroundColor:Color(0xff6373CC),
+          onPressed: () {
+            // Navigate to another page when the floating button is pressed.
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => GraphScreen()),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Icon(Icons.auto_graph_sharp),
+                FittedBox(fit:BoxFit.scaleDown, child: Text('Toolkit',style: TextStyle(fontSize: 12),)),
+              ],
+            ),
           ),
         ),
       ),

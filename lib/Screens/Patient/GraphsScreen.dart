@@ -26,41 +26,45 @@ class _GraphScreenState extends State<GraphScreen> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back,color:Color(0xff6373CC),),
-                      onPressed: () {
-                        // Pop the current context to navigate back when the back icon is pressed.
-                        Navigator.pop(context);
-                      },
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.2,
-                    ),
-                    Center(
-                      child: Text(
-                        "Toolkit",
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(
-                          textStyle: TextStyle(
-                            color: Color(0xff6373CC),
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
+            padding: const EdgeInsets.all(15.0),
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.arrow_back,color:Color(0xff6373CC),),
+                        onPressed: () {
+                          // Pop the current context to navigate back when the back icon is pressed.
+                          Navigator.pop(context);
+                        },
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.2,
+                      ),
+                      Center(
+                        child: Text(
+                          "Toolkit",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              color: Color(0xff6373CC),
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 50, left: 8),
-                  child: Column(
+                    ],
+                  ),
+                  SizedBox(
+                    height: 35,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
@@ -151,8 +155,8 @@ class _GraphScreenState extends State<GraphScreen> {
                       ),
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
