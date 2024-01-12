@@ -1,3 +1,4 @@
+import 'package:diabetes_ms/Components/Graphs/CarbGraphs.dart';
 import 'package:diabetes_ms/Providers/UserInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -105,7 +106,7 @@ class _GraphScreenState extends State<GraphScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => MealIntakeLog(patientNumber: context.read<UserProvider>().phoneNumber ?? ""),
+                                  builder: (context) => CarbGraph(patientNumber: context.read<UserProvider>().phoneNumber ?? ""),
                                 ),
                               );
                             },
