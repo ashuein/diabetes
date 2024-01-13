@@ -8,6 +8,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../URL.dart';
 import '../ColorBlockDialog.dart';
 import 'package:dropdown_model_list/dropdown_model_list.dart';
+import 'package:toast/toast.dart';
 
 class CarbGraph extends StatefulWidget {
 
@@ -26,7 +27,7 @@ class _CarbGraphState extends State<CarbGraph> {
   DropListModel dropListModel = DropListModel([
     OptionItem(id: "1", title: "Today"),
     OptionItem(id: "2", title: "Daily"),
-    OptionItem(id: "3", title: "Weekly"),
+    OptionItem(id: "3", title: "This Week"),
     OptionItem(id: "4", title: "Monthly"),
   ]);
   OptionItem optionItemSelected = OptionItem(title: "Today");
@@ -46,12 +47,20 @@ class _CarbGraphState extends State<CarbGraph> {
         carbData = List<Map<String, dynamic>>.from(json.decode(response.body));
       });
     } else {
-      print('Failed to load data: ${response.statusCode}');
+      Toast.show(
+        "Error fetching data try again...",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+
+    ToastContext().init(context);
+
     return Scaffold(
       backgroundColor: const Color(0xffF2F2F2),
       appBar: AppBar(
@@ -73,16 +82,6 @@ class _CarbGraphState extends State<CarbGraph> {
                   ),
                 ),
               ),
-            ),
-            IconButton(
-              icon: FittedBox(fit:BoxFit.scaleDown,child: const Icon(Icons.info_outlined)),
-              onPressed: () =>
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return ColorBlocksDialog();
-                    },
-                  ),
             ),
           ],
         ),
@@ -118,7 +117,7 @@ class _CarbGraphState extends State<CarbGraph> {
                       return buildTodayCarbGraph();
                     } else if (selectedProfile == 'Daily') {
                       return buildDailyCarbGraph();
-                    } else if (selectedProfile == 'Weekly') {
+                    } else if (selectedProfile == 'This Week') {
                       return buildWeeklyCarbGraph();
                     } else if (selectedProfile == 'Monthly') {
                       return buildMonthlyCarbGraph();
@@ -127,7 +126,7 @@ class _CarbGraphState extends State<CarbGraph> {
                       return const Text('Not implemented yet');
                     }
                   } else {
-                    return const CircularProgressIndicator();
+                    return const Text("No Data Available");
                   }
                 }(),
               ),

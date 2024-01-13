@@ -268,17 +268,12 @@ class _HomeScreenPState extends State<HomeScreenP> {
         SystemNavigator.pop();
         return true;
       },
-      child: isloading ? Container(
-        height: MediaQuery.of(context).size.height,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(
-                color:Color(0xffF86851),
-              ),
-            ],
+      child: isloading ? Scaffold(
+        body: Center(
+          child: Container(
+            child: CircularProgressIndicator(
+              color:Color(0xffF86851),
+            ),
           ),
         ),
       ) :  Scaffold(

@@ -8,10 +8,11 @@ import '../../URL.dart';
 import '../ColorBlockDialog.dart';
 import '../Log/BloodSugarLogs.dart';
 import 'package:dropdown_model_list/dropdown_model_list.dart';
+import 'package:toast/toast.dart';
 
 class BloodSugarGraph extends StatefulWidget {
 
-  final String patientNumber; // Using the "?" makes it optional
+  final String patientNumber;
   BloodSugarGraph({required this.patientNumber});
 
   @override
@@ -26,7 +27,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
   DropListModel dropListModel = DropListModel([
     OptionItem(id: "1", title: "Today"),
     OptionItem(id: "2", title: "Daily"),
-    OptionItem(id: "3", title: "Weekly"),
+    OptionItem(id: "3", title: "This Week"),
     OptionItem(id: "4", title: "Monthly"),
   ]);
   OptionItem optionItemSelected = OptionItem(title: "Today");
@@ -47,12 +48,20 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
         List<Map<String, dynamic>>.from(json.decode(response.body));
       });
     } else {
-      print('Failed to load data: ${response.statusCode}');
+      Toast.show(
+        "Error fetching data try again...",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+
+    ToastContext().init(context);
+
     return Scaffold(
       backgroundColor: const Color(0xffF2F2F2),
       appBar: AppBar(
@@ -119,7 +128,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
                       return buildTodayBloodSugarGraph();
                     } else if (selectedProfile == 'Daily') {
                       return buildDailyBloodSugarGraph();
-                    } else if (selectedProfile == 'Weekly') {
+                    } else if (selectedProfile == 'This Week') {
                       return buildWeeklyBloodSugarGraph();
                     } else if (selectedProfile == 'Monthly') {
                       return buildMonthlyBloodSugarGraph();
@@ -128,7 +137,7 @@ class _BloodSugarGraphState extends State<BloodSugarGraph> {
                       return const Text('Not implemented yet');
                     }
                   } else {
-                    return const CircularProgressIndicator();
+                    return const Text("No Data Available");
                   }
                 }(),
               ),

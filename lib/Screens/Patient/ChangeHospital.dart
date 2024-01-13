@@ -10,6 +10,7 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Components/DoctorCard.dart';
+import '../../URL.dart';
 
 class ChangeYourDoctor extends StatefulWidget {
   @override
@@ -38,7 +39,7 @@ class _ChangeYourDoctorState extends State<ChangeYourDoctor> {
 
     // Send a POST request to edit the doctor for the user
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:5000/edit_hospital'),
+      Uri.parse('${URL.baseUrl}/edit_hospital'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(data),
     );
@@ -49,9 +50,9 @@ class _ChangeYourDoctorState extends State<ChangeYourDoctor> {
     }
   }
 
-  // Fetch available doctors from the server
+  // Fetch available hospital from the server
   void fetchData() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:5000/get_hospital'));
+    final response = await http.get(Uri.parse('${URL.baseUrl}/get_hospital'));
     if (response.statusCode == 200) {
       setState(() {
         final jsonData = json.decode(response.body);
@@ -64,7 +65,15 @@ class _ChangeYourDoctorState extends State<ChangeYourDoctor> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return hospitals.isEmpty ? Scaffold(
+      body: Center(
+        child: Container(
+          child: CircularProgressIndicator(
+            color: Color(0xffF86851),
+          ),
+        ),
+      ),
+    ) : Scaffold(
       body: SafeArea(
         child: Container(
           margin: EdgeInsets.only(top: 50),

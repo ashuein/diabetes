@@ -10,6 +10,7 @@ import '../../Providers/UserInfo.dart';
 import '../../URL.dart';
 import '../ColorBlockDialog.dart';
 import '../Log/InsulinLog.dart';
+import 'package:toast/toast.dart';
 
 class InsulinGraph extends StatefulWidget {
 
@@ -29,7 +30,7 @@ class _InsulinGraphState extends State<InsulinGraph> {
   DropListModel dropListModel = DropListModel([
     OptionItem(id: "1", title: "Today"),
     OptionItem(id: "2", title: "Daily"),
-    OptionItem(id: "3", title: "Weekly"),
+    OptionItem(id: "3", title: "This Week"),
     OptionItem(id: "4", title: "Monthly"),
   ]);
   OptionItem optionItemSelected = OptionItem(title: "Today");
@@ -51,12 +52,20 @@ class _InsulinGraphState extends State<InsulinGraph> {
         List<Map<String, dynamic>>.from(json.decode(response.body));
       });
     } else {
-      print('Failed to load data: ${response.statusCode}');
+      Toast.show(
+        "Error fetching data try again...",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+
+    ToastContext().init(context);
+
     return Scaffold(
       backgroundColor: Color(0xffF2F2F2),
       appBar: AppBar(
@@ -86,7 +95,7 @@ class _InsulinGraphState extends State<InsulinGraph> {
                   onPressed: () => showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return ColorBlocksDialog();
+                      return ColorBlocksDialog2();
                     },
                   ),
                 ),
@@ -124,7 +133,7 @@ class _InsulinGraphState extends State<InsulinGraph> {
             return buildTodayInsulinGraph();
             } else if (selectedProfile == 'Daily') {
             return buildDailyInsulinGraph();
-            } else if (selectedProfile == 'Weekly') {
+            } else if (selectedProfile == 'This Week') {
             return buildWeeklyInsulinGraph();
             } else if (selectedProfile == 'Monthly') {
             return buildMonthlyInsulinGraph();
@@ -133,7 +142,7 @@ class _InsulinGraphState extends State<InsulinGraph> {
             return const Text('Not implemented yet');
             }
             } else {
-            return const CircularProgressIndicator();
+                return const Text("No Data Available");
               }
              }(),
               ),
@@ -245,9 +254,9 @@ class _InsulinGraphState extends State<InsulinGraph> {
                     .toInt()}';
 
                 var Boxcolor = Colors.black87;
-                if (data.label == 'Before') {
+                if (data.label == 'Meal Bolus') {
                   Boxcolor = Colors.teal;
-                } else if (data.label == 'After') {
+                } else if (data.label == 'Basal Insulin') {
                   Boxcolor = Colors.deepPurpleAccent;
                 } else {
                   Boxcolor = Colors.lightBlue;
