@@ -23,6 +23,9 @@ class _ActivityEntryBottomSheetState extends State<ActivityEntryBottomSheet> {
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
   String activityType = 'Light'; // Assuming 'Light' is the default value
+  String duration = "";
+
+  TextEditingController _durationController = TextEditingController();
 
   void _onMealSelected(String type) {
     setState(() {
@@ -74,10 +77,37 @@ class _ActivityEntryBottomSheetState extends State<ActivityEntryBottomSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Duration",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: _durationController,
+                          decoration: InputDecoration(labelText: 'Enter the duration in minutes (e.g., 30)'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(
+                      height: 20,
+                    ),
+
                     Text('Select Activity Intensity'),
+
                     SizedBox(
                       height: 10,
                     ),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -219,21 +249,27 @@ class _ActivityEntryBottomSheetState extends State<ActivityEntryBottomSheet> {
 
   // Function to save the blood sugar entry
   Future<void> saveMealIntakeEntry() async {
-    // TO:DO WHAT IF NULL
+
+    if (_durationController.text.isEmpty || double.tryParse(_durationController.text) == null
+        || double.parse(_durationController.text) < 0){
+      Toast.show(
+        "Please enter a valid value",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
+      return;
+    }
 
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     String timeStr = selectedTime.format(context);
-
-    // print(mealType);
-    // print(bloodSugarController.text);
-    // print(dateStr);
-    // print(timeStr);
 
     final data = {
       'selectedDate': dateStr,
       'selectedTime': timeStr,
       'activityType': activityType,
-      'phoneNumber': context.read<UserProvider>().phoneNumber
+      'phoneNumber': context.read<UserProvider>().phoneNumber,
+      'duration' : _durationController.text
     };
 
     final url = '${URL.baseUrl}/save_activity';
@@ -253,7 +289,7 @@ class _ActivityEntryBottomSheetState extends State<ActivityEntryBottomSheet> {
       );
 
       widget.callbackToUpdateInfo();
-      // print('Activity record saved successfully');
+
       // Handle success
     } else {
       print('Failed to save activity record');

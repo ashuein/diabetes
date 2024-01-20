@@ -17,12 +17,12 @@ class PhysicalActivityLog extends StatelessWidget {
     final response = await http.get(Uri.parse('${URL.baseUrl}/activity_records/$phoneNumber'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      print(data);
       return data.map((entry) {
         return ActivityEntry(
           intensity: entry['activity_type'],
           date: DateTime.parse(entry['date']),
           time: DateFormat('HH:mm:ss').parse(entry['time']),
+          duration: entry['duration']
         );
       }).toList();
     } else {
@@ -86,13 +86,26 @@ class PhysicalActivityLog extends StatelessWidget {
                         String formattedTime = DateFormat('HH:mm').format(entry.time);
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 5.0),
-                          child: Text(
-                            'Time: $formattedTime, Activity Intensity: ${entry.intensity}',style: GoogleFonts.inter(
-                            textStyle: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black87,
-                            ),
-                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Time: $formattedTime, Activity Intensity: ${entry.intensity}',style: GoogleFonts.inter(
+                                textStyle: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              ),
+                              Text(
+                                'Duration: ${entry.duration ?? "0.0"} min',style: GoogleFonts.inter(
+                                textStyle: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              ),
+                            ],
                           ),
                         );
                       }).toList(),
@@ -114,10 +127,12 @@ class ActivityEntry {
   final String intensity;
   final DateTime date;
   final DateTime time;
+  final String? duration;
 
   ActivityEntry({
     required this.intensity,
     required this.date,
     required this.time,
+    required this.duration
   });
 }

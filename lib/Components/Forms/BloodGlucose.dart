@@ -19,7 +19,7 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
 
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
-  String mealType = 'Before'; // Assuming 'Before' is the default value
+  String mealType = 'Before Meal'; // Assuming 'Before' is the default value
   TextEditingController bloodSugarController = TextEditingController();
 
   void _onMealSelected(String type) {
@@ -128,7 +128,7 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Meal Type:'),
+                    Text('Testing Time:'),
                     SizedBox(
                       height: 10,
                     ),
@@ -136,13 +136,13 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         ElevatedButton(
-                          onPressed: () => _onMealSelected("Before"),
-                          child: const Text('Before'),
+                          onPressed: () => _onMealSelected("Before Meal"),
+                          child: const Text('Before Meal'),
                           style: ElevatedButton.styleFrom(
-                              foregroundColor: mealType == "Before"
+                              foregroundColor: mealType == "Before Meal"
                                   ? Colors.white
                                   : const Color(0xff6373CC),
-                              backgroundColor: mealType == "Before"
+                              backgroundColor: mealType == "Before Meal"
                                   ? const Color(0xffF86851)
                                   : const Color(0xffD9D9D9),
                               shape: RoundedRectangleBorder(
@@ -151,13 +151,13 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
                               minimumSize: const Size(75, 35)),
                         ),
                         ElevatedButton(
-                          onPressed: () => _onMealSelected("After"),
-                          child: const Text('After'),
+                          onPressed: () => _onMealSelected("After Meal"),
+                          child: const Text('After Meal'),
                           style: ElevatedButton.styleFrom(
-                              foregroundColor: mealType == "After"
+                              foregroundColor: mealType == "After Meal"
                                   ? Colors.white
                                   : const Color(0xff6373CC),
-                              backgroundColor: mealType == "After"
+                              backgroundColor: mealType == "After Meal"
                                   ? const Color(0xffF86851)
                                   : const Color(0xffD9D9D9),
                               shape: RoundedRectangleBorder(
@@ -166,19 +166,19 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
                               minimumSize: const Size(75, 35)),
                         ),
                         ElevatedButton(
-                          onPressed: () => _onMealSelected("Low Sugar"),
+                          onPressed: () => _onMealSelected("Other"),
                           style: ElevatedButton.styleFrom(
-                              foregroundColor: mealType == "Low Sugar"
+                              foregroundColor: mealType == "Other"
                                   ? Colors.white
                                   : const Color(0xff6373CC),
-                              backgroundColor: mealType == "Low Sugar"
+                              backgroundColor: mealType == "Other"
                                   ? const Color(0xffF86851)
                                   : const Color(0xffD9D9D9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               minimumSize: const Size(75, 35)),
-                          child: const Text('Low Sugar'),
+                          child: const Text('Other'),
                         ),
                       ],
                     ),

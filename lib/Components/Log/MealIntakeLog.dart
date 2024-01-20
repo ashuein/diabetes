@@ -32,6 +32,7 @@ class _MealIntakeLogState extends State<MealIntakeLog> {
             meal_intake: entry['meal_intake'],
             date: DateTime.parse(entry['date']),
             time: DateFormat('HH:mm:ss').parse(entry['time']),
+            carb: entry['carb']
           ),
         );
       }).values.toList();
@@ -94,9 +95,7 @@ class _MealIntakeLogState extends State<MealIntakeLog> {
       final response = await http.get(Uri.parse(apiUrl));
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = json.decode(response.body);
-        print(responseData);
         String base64Image = await responseData['foodpic'];
-        print("Here!!!");
         _showImageDialog(context, base64Image,date,time);
       } else {
         // Handle error cases, such as non-200 response status
@@ -130,7 +129,6 @@ class _MealIntakeLogState extends State<MealIntakeLog> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            print(snapshot);
             return Center(child: Text('Error fetching data'));
           } else {
             List<MealIntakeEntry> mealData = snapshot.data!;
@@ -140,12 +138,13 @@ class _MealIntakeLogState extends State<MealIntakeLog> {
               itemBuilder: (context, index) {
                 String date = DateFormat('yyyy-MM-dd').format(mealData[index].date);
                 String time = DateFormat('HH:mm').format(mealData[index].time);
+                double carb = mealData[index].carb;
                 return ListTile(
                   onTap: (){
                     _fetchAndShowImage(date,time);
                   },
                   title: Text('Meal Intake: ${mealData[index].meal_intake}'),
-                  subtitle: Text('Date: ${date} , Time: ${time}'),
+                  subtitle: Text('Date: ${date} , Time: ${time} , Carbs: ${carb}'),
                 );
               },
             );
@@ -163,10 +162,12 @@ class MealIntakeEntry {
   final String meal_intake;
   final DateTime date;
   final DateTime time;
+  final double carb;
 
   MealIntakeEntry({
     required this.meal_intake,
     required this.date,
     required this.time,
+    required this.carb
   });
 }

@@ -16,12 +16,33 @@ class BloodReportEntryBottomSheet extends StatefulWidget {
 
 class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomSheet> {
 
+  // LDL (Low-Density Lipoprotein) Cholesterol
+  // HDL (High-Density Lipoprotein) Cholesterol
+  // Total Cholesterol
+  // Triglycerides
+
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
+
+  // hemoglobin A1C
   TextEditingController hbController = TextEditingController();
-  TextEditingController choleController = TextEditingController();
-  TextEditingController vdController = TextEditingController();
-  TextEditingController vb12Controller = TextEditingController();
+
+  // Cholesterol
+  TextEditingController choleLDLController = TextEditingController();
+  TextEditingController choleHDLController = TextEditingController();
+  TextEditingController choleTotalController = TextEditingController();
+  TextEditingController choleTriController = TextEditingController();
+
+  // Thyroid Function
+  TextEditingController tshController = TextEditingController();
+  TextEditingController t3Controller = TextEditingController();
+  TextEditingController t4Controller = TextEditingController();
+
+  // TTG
+  TextEditingController ttgController = TextEditingController();
+
+  // urine microalbumin
+  TextEditingController umaController = TextEditingController();
 
   String _formatTimeOfDay(TimeOfDay timeOfDay) {
     final now = DateTime.now();
@@ -30,6 +51,15 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
     final format =
     DateFormat.jm(); // You can customize the time format here if needed.
     return format.format(dateTime);
+  }
+
+  double parseDouble(String value) {
+    try {
+      return double.parse(value);
+    } catch (e) {
+      // Handle the case where the value cannot be parsed as a double
+      return 0.0;  // Default value or any value you consider appropriate
+    }
   }
 
   @override
@@ -45,7 +75,7 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.all(5.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Center(
                   child: Text(
                     'Blood Report',
@@ -53,19 +83,34 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                       textStyle: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xff6373CC),
-                        fontSize: 20,
+                        fontSize: 24,
                       ),
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
               ),
-              SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Center(
+                        child: Text(
+                          'Hemoglobin A1c',
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xffF86851),
+                              fontSize: 18,
+                            ),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -85,12 +130,27 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                         ),
                       ],
                     ),
-                    SizedBox(height: 30,),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Center(
+                        child: Text(
+                          'Cholesterol Levels',
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xffF86851),
+                              fontSize: 18,
+                            ),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Cholesterol",
+                          "Total Cholesterol",
                           style: GoogleFonts.inter(
                             textStyle: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -99,7 +159,7 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                           ),
                         ),
                         TextField(
-                          controller: choleController,
+                          controller: choleTotalController,
                           decoration: InputDecoration(hintText: 'Enter your Cholesterol (mg/dL)'),
                           keyboardType: TextInputType.number,
                         ),
@@ -110,7 +170,7 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Vitamin D",
+                          "LDL (Low-Density Lipoprotein) Cholesterol",
                           style: GoogleFonts.inter(
                             textStyle: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -119,8 +179,8 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                           ),
                         ),
                         TextField(
-                          controller: vdController,
-                          decoration: InputDecoration(hintText: 'Enter your vitamin D (ng/ml)'),
+                          controller: choleLDLController,
+                          decoration: InputDecoration(hintText: 'Enter your Cholesterol (mg/dL)'),
                           keyboardType: TextInputType.number,
                         ),
                       ],
@@ -130,7 +190,7 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Vitamin B12",
+                          "HDL (High-Density Lipoprotein) Cholesterol",
                           style: GoogleFonts.inter(
                             textStyle: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -139,8 +199,173 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                           ),
                         ),
                         TextField(
-                          controller: vb12Controller,
-                          decoration: InputDecoration(hintText: 'Enter your vitamin B12 (pg/mL)'),
+                          controller: choleHDLController,
+                          decoration: InputDecoration(hintText: 'Enter your Cholesterol (mg/dL)'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Triglycerides",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: choleTriController,
+                          decoration: InputDecoration(hintText: 'Enter your Cholesterol (mg/dL)'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Center(
+                        child: Text(
+                          'Thyroid Function',
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xffF86851),
+                              fontSize: 18,
+                            ),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "TSH (Thyroid Stimulating Hormone)",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: tshController,
+                          decoration: InputDecoration(hintText: 'Enter your TSH (Thyroid Stimulating Hormone)'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Free T3",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: t3Controller,
+                          decoration: InputDecoration(hintText: 'Enter your Free T3 (pg/mL)'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Free T4",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: t4Controller,
+                          decoration: InputDecoration(hintText: 'Enter your Free T4 (ng/dL)'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Center(
+                        child: Text(
+                          'Tissue Transglutaminase (TTG) antibodies',
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xffF86851),
+                              fontSize: 18,
+                            ),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "TTG Antibodies Test",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: ttgController,
+                          decoration: InputDecoration(hintText: 'Enter here'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Center(
+                        child: Text(
+                          'Urine Microalbumin',
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xffF86851),
+                              fontSize: 18,
+                            ),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Urine Microalbumin",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: umaController,
+                          decoration: InputDecoration(hintText: 'Enter here'),
                           keyboardType: TextInputType.number,
                         ),
                       ],
@@ -225,25 +450,28 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
 
   // Function to save the blood sugar entry
   Future<void> saveMealIntakeEntry() async {
-    // TO:DO WHAT IF NULL
+
+    // TO:DO Valid Validation of the data
 
     String dateStr = DateFormat('yyyy-MM-dd').format(selectedDate);
     String timeStr = selectedTime.format(context);
 
-    // print(mealType);
-    // print(bloodSugarController.text);
-    // print(dateStr);
-    // print(timeStr);
-
     final data = {
       'selectedDate': dateStr,
       'selectedTime': timeStr,
-      'hba1c': hbController.text,
-      'cholesterol': choleController.text,
-      'vitaminD' : vdController.text,
-      'vitaminB12': vb12Controller.text,
-      'phoneNumber': context.read<UserProvider>().phoneNumber
+      'hba1c': parseDouble(hbController.text),
+      'cholesterol_ldl': parseDouble(choleLDLController.text),
+      'cholesterol_hdl': parseDouble(choleHDLController.text),
+      'cholesterol_total': parseDouble(choleTotalController.text),
+      'cholesterol_triglycerides': parseDouble(choleTriController.text),
+      'thyroid_tsh': parseDouble(tshController.text),
+      'thyroid_t3': parseDouble(t3Controller.text),
+      'thyroid_t4': parseDouble(t4Controller.text),
+      'ttg': parseDouble(ttgController.text),
+      'urine_microalbumin': parseDouble(umaController.text),
+      'phoneNumber': context.read<UserProvider>().phoneNumber,
     };
+
 
     final url = '${URL.baseUrl}/save_blood_reports';
 
