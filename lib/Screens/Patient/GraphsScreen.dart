@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import '../../Components/Graphs/BloodSugarGraph.dart';
 import '../../Components/Graphs/InuslinGraph.dart';
-import '../../Components/Log/BloodReport.dart';
+import '../../Components/Log/BloodReportLogs.dart';
 import '../../Components/Log/MealIntakeLog.dart';
 import '../../Components/Log/PhysicalActivityLog.dart';
 import '../../Components/RectangleButton.dart';

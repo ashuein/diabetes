@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../URL.dart';
-import '../Forms/BloodReportLog.dart';
+import '../Forms/BloodReportLogBottomSheet.dart';
 
 class BloodReport extends StatefulWidget {
 
@@ -25,13 +25,18 @@ class _BloodReportState extends State<BloodReport> {
     final response = await http.get(Uri.parse('${URL.baseUrl}/blood_reports/$phoneNumber'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      print(data);
       return data.map((entry) {
         return ReportEntry(
           hba1c: entry['hba1c'],
-          cholesterol: entry['cholesterol'],
-          vd: entry['vitamind'],
-          v12: entry['vitaminb12'],
+          ldl: entry['ldl'],
+          hdl: entry['hdl'],
+          totalChole: entry['totalChole'],
+          triglyChole: entry['triglyChole'],
+          tsh: entry['tsh'],
+          t3: entry['t3'],
+          t4: entry['t4'],
+          ttg: entry['ttg'],
+          urine: entry['uma'],
           date: DateTime.parse(entry['date']),
           time: DateFormat('HH:mm:ss').parse(entry['time']),
         );
@@ -41,7 +46,7 @@ class _BloodReportState extends State<BloodReport> {
     }
   }
 
-  void openBloodReportEntryDialog(hb,chole,vd,v12) {
+  void openBloodReportEntryDialog(totalChole,hba1c,hdl,ldl,t3,t4,triglyChole,tsh,ttg,urine) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -49,7 +54,7 @@ class _BloodReportState extends State<BloodReport> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
       ),
       builder: (BuildContext context) {
-        return BloodReportLogBottomSheet(hb: hb,chole: chole,vd: vd,vb12: v12,);
+        return BloodReportLogBottomSheet(totalChole: totalChole,hba1c: hba1c,hdl: hdl,ldl: ldl,t3: t3,t4: t4,triglyChole: triglyChole,tsh: tsh,ttg: ttg,urine: urine);
       },
     );
   }
@@ -94,7 +99,7 @@ class _BloodReportState extends State<BloodReport> {
 
                   return ListTile(
                     onTap: (){
-                      openBloodReportEntryDialog(data.hba1c,data.cholesterol,data.vd,data.v12);
+                      openBloodReportEntryDialog(data.totalChole,data.hba1c,data.hdl,data.ldl,data.t3,data.t4,data.triglyChole,data.tsh,data.ttg,data.urine);
                     },
                     title: Container(
                       margin: EdgeInsets.only(bottom: 20.0),
@@ -149,19 +154,31 @@ class _BloodReportState extends State<BloodReport> {
 
 
 class ReportEntry {
-  final String hba1c;
+  final double hba1c;
+  final double totalChole;
+  final double ldl;
+  final double hdl;
+  final double triglyChole;
+  final double tsh;
+  final double t3;
+  final double t4;
+  final double ttg;
+  final double urine;
   final DateTime date;
   final DateTime time;
-  final String vd;
-  final String v12;
-  final String cholesterol;
 
   ReportEntry({
+    required this.totalChole,
+    required this.ldl,
+    required this.hdl,
+    required this.triglyChole,
+    required this.tsh,
+    required this.t3,
+    required this.t4,
+    required this.ttg,
+    required this.urine,
     required this.hba1c,
     required this.date,
     required this.time,
-    required this.vd,
-    required this.v12,
-    required this.cholesterol,
   });
 }
