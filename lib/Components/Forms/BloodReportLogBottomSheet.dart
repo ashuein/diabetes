@@ -18,6 +18,8 @@ class BloodReportLogBottomSheet extends StatelessWidget {
   final double t4;
   final double ttg;
   final double urine;
+  final double non_hdl;
+  final double vldl;
 
   BloodReportLogBottomSheet({
     required this.totalChole,
@@ -30,6 +32,8 @@ class BloodReportLogBottomSheet extends StatelessWidget {
     required this.ttg,
     required this.urine,
     required this.hba1c,
+    required this.vldl,
+    required this.non_hdl
   });
 
   // hemoglobin A1C
@@ -40,6 +44,8 @@ class BloodReportLogBottomSheet extends StatelessWidget {
   TextEditingController choleHDLController = TextEditingController();
   TextEditingController choleTotalController = TextEditingController();
   TextEditingController choleTriController = TextEditingController();
+  TextEditingController choleVLDLController = TextEditingController();
+  TextEditingController choleNonHDLController = TextEditingController();
 
   // Thyroid Function
   TextEditingController tshController = TextEditingController();
@@ -65,6 +71,8 @@ class BloodReportLogBottomSheet extends StatelessWidget {
     t4Controller.text = t4.toString();
     ttgController.text = ttg.toString();
     umaController.text = urine.toString();
+    choleNonHDLController.text = non_hdl.toString();
+    choleVLDLController.text = vldl.toString();
 
     return FractionallySizedBox(
       heightFactor: 0.85,
@@ -223,6 +231,46 @@ class BloodReportLogBottomSheet extends StatelessWidget {
                         TextField(
                           controller: choleTriController,
                           decoration: InputDecoration(hintText: 'Enter your Cholesterol (mg/dL)'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Non-HDL Cholesterol",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: choleNonHDLController,
+                          decoration: InputDecoration(hintText: 'Enter here'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "VLDL Cholesterol",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: choleVLDLController,
+                          decoration: InputDecoration(hintText: 'Enter here'),
                           keyboardType: TextInputType.number,
                         ),
                       ],

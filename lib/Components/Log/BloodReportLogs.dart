@@ -27,18 +27,20 @@ class _BloodReportState extends State<BloodReport> {
       final List<dynamic> data = json.decode(response.body);
       return data.map((entry) {
         return ReportEntry(
-          hba1c: entry['hba1c'],
-          ldl: entry['ldl'],
-          hdl: entry['hdl'],
-          totalChole: entry['totalChole'],
-          triglyChole: entry['triglyChole'],
-          tsh: entry['tsh'],
-          t3: entry['t3'],
-          t4: entry['t4'],
-          ttg: entry['ttg'],
-          urine: entry['uma'],
+          hba1c: entry['hba1c'] ?? 0,
+          ldl: entry['ldl'] ?? 0,
+          hdl: entry['hdl'] ?? 0,
+          totalChole: entry['totalChole'] ?? 0,
+          triglyChole: entry['triglyChole'] ?? 0,
+          tsh: entry['tsh'] ?? 0,
+          t3: entry['t3'] ?? 0,
+          t4: entry['t4'] ?? 0,
+          ttg: entry['ttg'] ?? 0,
+          urine: entry['uma'] ?? 0,
           date: DateTime.parse(entry['date']),
           time: DateFormat('HH:mm:ss').parse(entry['time']),
+          non_hdl: entry['non_hdl'] ?? 0,
+          vldl: entry['vldl'] ?? 0,
         );
       }).toList();
     } else {
@@ -46,7 +48,7 @@ class _BloodReportState extends State<BloodReport> {
     }
   }
 
-  void openBloodReportEntryDialog(totalChole,hba1c,hdl,ldl,t3,t4,triglyChole,tsh,ttg,urine) {
+  void openBloodReportEntryDialog(totalChole,hba1c,hdl,ldl,t3,t4,triglyChole,tsh,ttg,urine,vldl,nonhdl) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -54,7 +56,7 @@ class _BloodReportState extends State<BloodReport> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
       ),
       builder: (BuildContext context) {
-        return BloodReportLogBottomSheet(totalChole: totalChole,hba1c: hba1c,hdl: hdl,ldl: ldl,t3: t3,t4: t4,triglyChole: triglyChole,tsh: tsh,ttg: ttg,urine: urine);
+        return BloodReportLogBottomSheet(totalChole: totalChole,hba1c: hba1c,hdl: hdl,ldl: ldl,t3: t3,t4: t4,triglyChole: triglyChole,tsh: tsh,ttg: ttg,urine: urine,vldl: vldl,non_hdl: nonhdl,);
       },
     );
   }
@@ -99,7 +101,7 @@ class _BloodReportState extends State<BloodReport> {
 
                   return ListTile(
                     onTap: (){
-                      openBloodReportEntryDialog(data.totalChole,data.hba1c,data.hdl,data.ldl,data.t3,data.t4,data.triglyChole,data.tsh,data.ttg,data.urine);
+                      openBloodReportEntryDialog(data.totalChole,data.hba1c,data.hdl,data.ldl,data.t3,data.t4,data.triglyChole,data.tsh,data.ttg,data.urine,data.vldl,data.non_hdl);
                     },
                     title: Container(
                       margin: EdgeInsets.only(bottom: 20.0),
@@ -164,6 +166,8 @@ class ReportEntry {
   final double t4;
   final double ttg;
   final double urine;
+  final double non_hdl;
+  final double vldl;
   final DateTime date;
   final DateTime time;
 
@@ -180,5 +184,7 @@ class ReportEntry {
     required this.hba1c,
     required this.date,
     required this.time,
+    required this.vldl,
+    required this.non_hdl
   });
 }

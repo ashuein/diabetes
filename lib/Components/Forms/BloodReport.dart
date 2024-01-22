@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 import '../../URL.dart';
 
@@ -32,6 +33,8 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
   TextEditingController choleHDLController = TextEditingController();
   TextEditingController choleTotalController = TextEditingController();
   TextEditingController choleTriController = TextEditingController();
+  TextEditingController choleVLDLController = TextEditingController();
+  TextEditingController choleNonHDLController = TextEditingController();
 
   // Thyroid Function
   TextEditingController tshController = TextEditingController();
@@ -64,6 +67,9 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
 
   @override
   Widget build(BuildContext context) {
+
+    ToastContext().init(context);
+
     return FractionallySizedBox(
       heightFactor: 0.85,
       widthFactor: 1.0,
@@ -160,7 +166,7 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                         ),
                         TextField(
                           controller: choleTotalController,
-                          decoration: InputDecoration(hintText: 'Enter your Cholesterol (mg/dL)'),
+                          decoration: InputDecoration(hintText: 'Enter here'),
                           keyboardType: TextInputType.number,
                         ),
                       ],
@@ -180,7 +186,7 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                         ),
                         TextField(
                           controller: choleLDLController,
-                          decoration: InputDecoration(hintText: 'Enter your Cholesterol (mg/dL)'),
+                          decoration: InputDecoration(hintText: 'Enter here'),
                           keyboardType: TextInputType.number,
                         ),
                       ],
@@ -200,7 +206,7 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                         ),
                         TextField(
                           controller: choleHDLController,
-                          decoration: InputDecoration(hintText: 'Enter your Cholesterol (mg/dL)'),
+                          decoration: InputDecoration(hintText: 'Enter here'),
                           keyboardType: TextInputType.number,
                         ),
                       ],
@@ -220,7 +226,47 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                         ),
                         TextField(
                           controller: choleTriController,
-                          decoration: InputDecoration(hintText: 'Enter your Cholesterol (mg/dL)'),
+                          decoration: InputDecoration(hintText: 'Enter here'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Non-HDL Cholesterol",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: choleNonHDLController,
+                          decoration: InputDecoration(hintText: 'Enter here'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 30,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "VLDL Cholesterol",
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: choleVLDLController,
+                          decoration: InputDecoration(hintText: 'Enter here'),
                           keyboardType: TextInputType.number,
                         ),
                       ],
@@ -415,8 +461,8 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        saveMealIntakeEntry();
+                      onPressed: () async {
+                        await savebloodReport();
                         Navigator.of(context).pop();
                       },
                       style: ElevatedButton.styleFrom(
@@ -449,7 +495,7 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
   }
 
   // Function to save the blood sugar entry
-  Future<void> saveMealIntakeEntry() async {
+  Future<void> savebloodReport() async {
 
     // TO:DO Valid Validation of the data
 
@@ -470,6 +516,8 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
       'ttg': parseDouble(ttgController.text),
       'urine_microalbumin': parseDouble(umaController.text),
       'phoneNumber': context.read<UserProvider>().phoneNumber,
+      'cholesterol_vldl' : parseDouble(choleVLDLController.text),
+      'cholesterol_non_hdl' : parseDouble(choleNonHDLController.text)
     };
 
 
@@ -482,7 +530,12 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
     );
 
     if (response.statusCode == 201) {
-      print('Blood Report record saved successfully');
+      Toast.show(
+        "Blood Report record saved successfully",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+        backgroundRadius: 8.0,
+      );
       // Handle success
     } else {
       print('Failed to save blood report record');
