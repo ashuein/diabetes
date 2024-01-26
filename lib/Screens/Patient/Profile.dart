@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:diabetes_ms/Screens/Patient/ChangeProfilePic.dart';
 import 'package:diabetes_ms/Screens/OnBoarding/ProfilePic.dart';
+import 'package:dropdown_model_list/drop_down/model.dart';
+import 'package:dropdown_model_list/drop_down/select_drop_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,7 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
   List<Map<String, dynamic>> hospitals = [];
   String hospital = "";
   bool isloading = false;
-  late final jsonData;
+  late var jsonData;
 
   Future<void> logOut() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -34,25 +36,27 @@ class _ProfilePageState extends State<ProfilePage> {
     userProvider.clearUserData();
   }
 
-  void fetchUserTableData() async {
+  void fetchUserTableData(option) async {
 
     setState(() {
       isloading = true;
     });
 
     var phoneNumber = context.read<UserProvider>().phoneNumber;
+    var days = option;
 
-    final response = await http.get(Uri.parse('${URL.baseUrl}/get_blood_sugar_table/$phoneNumber'));
+    final response = await http.get(Uri.parse('${URL.baseUrl}/get_blood_sugar_table/$phoneNumber/$days'));
 
     if(response.statusCode == 200){
         jsonData = json.decode(response.body);
+
+        setState(() {
+          isloading = false;
+        });
+
     } else{
       print('Failed to fetch data');
     }
-
-    setState(() {
-      isloading = false;
-    });
 
   }
 
@@ -66,11 +70,20 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState()  {
     fetchHospitalData();
-    fetchUserTableData();
   }
+
+  String selectedProfile = 'All';
+  DropListModel dropListModel = DropListModel([
+    OptionItem(id: "1", title: "All"),
+    OptionItem(id: "2", title: "7 days"),
+    OptionItem(id: "3", title: "30 days"),
+  ]);
+  OptionItem optionItemSelected = OptionItem(title: "All");
 
   // Fetch available hospital from the server
   void fetchHospitalData() async {
+
+    fetchUserTableData(1);
 
     setState(() {
       isloading = true;
@@ -98,6 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return isloading ? Scaffold(
       body: Center(
         child: Container(
@@ -283,25 +297,50 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(
                   height: 45,
                 ),
-                Center(
-                  child: Container(
-                    padding: EdgeInsets.zero,
-                    child: FittedBox(
-                      alignment: Alignment.centerLeft,
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        "Blood Sugar Report",
-                        textAlign: TextAlign.left,
-                        style: GoogleFonts.inter(
-                          textStyle: TextStyle(
-                            color: Color(0xff6373CC),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.zero,
+                      child: FittedBox(
+                        alignment: Alignment.centerLeft,
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          "Blood Sugar Report",
+                          textAlign: TextAlign.left,
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              color: Color(0xff6373CC),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    SelectDropList(
+                      paddingBottom: 0,
+                      paddingTop: 0,
+                      heightBottomContainer: 125,
+                      itemSelected: optionItemSelected,
+                      dropListModel: dropListModel,
+                      showIcon: false,
+                      showArrowIcon: true,
+                      showBorder: true,
+                      containerPadding: const EdgeInsets.all(10),
+                      paddingDropItem: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
+                      suffixIcon: Icons.arrow_drop_down,
+                      onOptionSelected: (optionItem) {
+                        optionItemSelected = optionItem;
+                        setState(() {
+                          selectedProfile = optionItemSelected.title;
+                          fetchUserTableData(optionItem.id);
+                        });
+                      },
+                    ),
+                  ],
                 ),
                 Container(
                   child: Padding(
@@ -396,6 +435,11 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget buildTableWithData(List<dynamic> mealTypeData) {
+
+    if (mealTypeData.isEmpty) {
+      return Text('No data available.');
+    }
+
     List<DataColumn> columns = [
       DataColumn(label: Text('Metric')),
     ];
@@ -404,9 +448,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
     // Create columns dynamically based on meal types
     Set<String> mealTypes = Set<String>();
-    // mealTypeData.forEach((record) {
-    //   mealTypes.add(record['meal_type']);
-    // });
 
     mealTypes.add("before_breakfast");
     mealTypes.add("after_breakfast");
@@ -414,6 +455,7 @@ class _ProfilePageState extends State<ProfilePage> {
     mealTypes.add("after_lunch");
     mealTypes.add("before_dinner");
     mealTypes.add("after_dinner");
+    mealTypes.add("other");
 
     columns.addAll(mealTypes.map((mealType) {
 
@@ -470,19 +512,18 @@ class _ProfilePageState extends State<ProfilePage> {
             .where((record) => record['meal_type'] == mealType)
             .toList();
 
-        var data;
-
-        if(dataForMealType[0][metric.toLowerCase()].runtimeType == String){
-          data = double.parse(dataForMealType[0][metric.toLowerCase()]).toStringAsFixed(2);
-        } else{
-          data = dataForMealType[0][metric.toLowerCase()].toStringAsFixed(2);
-        }
+        var data = "0.0";
 
         if (dataForMealType.isNotEmpty) {
-          cells.add(DataCell(Text('${data}')));
-        } else {
-          cells.add(DataCell(Text('')));
+          if (dataForMealType[0][metric.toLowerCase()].runtimeType == String) {
+            data = double.parse(dataForMealType[0][metric.toLowerCase()])
+                .toStringAsFixed(2);
+          } else {
+            data = dataForMealType[0][metric.toLowerCase()].toStringAsFixed(2);
+          }
         }
+
+        cells.add(DataCell(Text('$data')));
       });
 
       rows.add(DataRow(cells: cells));

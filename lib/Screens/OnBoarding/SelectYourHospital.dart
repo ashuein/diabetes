@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Components/DoctorCard.dart';
 import '../../URL.dart';
+import 'Pin.dart';
 
 class SelectYourDoctor extends StatefulWidget {
   @override
@@ -139,7 +140,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => HomeScreenP(),
+                                  builder: (context) => PinScreen(mobileNumber: context.read<UserProvider>().phoneNumber,),
                                 ),
                               );
                             }
