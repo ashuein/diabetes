@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="diabetes_ms"
+        android:label="T1Dxpert"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
