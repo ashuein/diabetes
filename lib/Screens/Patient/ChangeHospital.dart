@@ -45,6 +45,9 @@ class _ChangeYourDoctorState extends State<ChangeYourDoctor> {
     );
     if (response.statusCode == 200) {
       print("Edit Successfully");
+
+      context.read<UserProvider>().setHospitalid(id!);
+
     } else {
       print('Failed to edit.');
     }

@@ -84,6 +84,7 @@ class _SelectYourDoctorState extends State<SelectYourDoctor> {
       });
     } else {
       print('Failed to add user.');
+      print(response.body);
     }
   }
 

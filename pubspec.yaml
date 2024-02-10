@@ -48,6 +48,7 @@ dependencies:
   postgres: ^2.6.1
   toast: ^0.3.0
   dropdown_model_list: ^2.0.0
+  url_launcher: ^6.1.14
 
 dev_dependencies:
   flutter_test:

@@ -23,6 +23,8 @@ class _BloodReportState extends State<BloodReport> {
 
   Future<List<ReportEntry>> fetchReportData(phoneNumber) async {
     final response = await http.get(Uri.parse('${URL.baseUrl}/blood_reports/$phoneNumber'));
+
+    print(response.body);
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       return data.map((entry) {
@@ -39,8 +41,8 @@ class _BloodReportState extends State<BloodReport> {
           urine: entry['uma'] ?? 0,
           date: DateTime.parse(entry['date']),
           time: DateFormat('HH:mm:ss').parse(entry['time']),
-          non_hdl: entry['non_hdl'] ?? 0,
-          vldl: entry['vldl'] ?? 0,
+          non_hdl: entry['non_hdl'] ?? 0.0,
+          vldl: entry['vldl'] ?? 0.0,
         );
       }).toList();
     } else {

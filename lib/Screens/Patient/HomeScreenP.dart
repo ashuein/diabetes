@@ -242,6 +242,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
       }
 
       carbsAverage = sum / (carbsRecords.length - diff);
+      carbsAverage = (carbsAverage * 100).round() / 100;
 
       if (carbsRecords.isEmpty) {
         carbsAverage = 0.0;

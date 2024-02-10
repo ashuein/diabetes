@@ -279,6 +279,7 @@ class _BloodSugarEntryBottomSheetState extends State<BloodSugarEntryBottomSheet>
       // Handle success
     } else {
       print('Failed to save blood sugar record');
+      print(response.body);
       // Handle error
     }
   }
