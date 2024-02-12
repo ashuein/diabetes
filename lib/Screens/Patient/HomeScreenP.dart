@@ -232,6 +232,10 @@ class _HomeScreenPState extends State<HomeScreenP> {
       }
       insulinAverage = sum / insulinRecords.length;
 
+      if (insulinAverage.isInfinite || insulinAverage.isNaN) {
+        insulinAverage = 0.0;
+      }
+
       sum = 0.0;
       int diff = 0;
       for(int i = 0 ; i < carbsRecords.length ; i++){
@@ -243,6 +247,10 @@ class _HomeScreenPState extends State<HomeScreenP> {
 
       carbsAverage = sum / (carbsRecords.length - diff);
       carbsAverage = (carbsAverage * 100).round() / 100;
+
+      if (carbsAverage.isInfinite || carbsAverage.isNaN) {
+        carbsAverage = 0.0;
+      }
 
       if (carbsRecords.isEmpty) {
         carbsAverage = 0.0;
@@ -301,6 +309,7 @@ class _HomeScreenPState extends State<HomeScreenP> {
                               }
 
                               return Container(
+                                width: MediaQuery.of(context).size.width * 0.75,
                                 padding: EdgeInsets.zero,
                                 child: FittedBox(
                                   alignment: Alignment.centerLeft,

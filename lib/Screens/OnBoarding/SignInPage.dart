@@ -59,6 +59,7 @@ class _SignInPageState extends State<SignInPage> {
       });
     } catch (error) {
       // Handle error
+      print(error);
     }
   }
 

@@ -444,6 +444,12 @@ class _BloodReportEntryBottomSheetState extends State<BloodReportEntryBottomShee
                         final TimeOfDay? picked = await showTimePicker(
                           context: context,
                           initialTime: selectedTime,
+                          builder: (BuildContext context, Widget ?child) {
+                            return MediaQuery(
+                              data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+                              child: child!,
+                            );
+                          },
                         );
                         if (picked != null && picked != selectedTime)
                           setState(() {
