@@ -41,7 +41,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       ))
       ..loadRequest(
         Uri.parse(
-            'https://docs.google.com/document/d/1stoj1bodv2kOouSXx2nB2p-mCdok7p2LD-05iAzz-pY/edit?usp=sharing'),
+            'https://docs.google.com/document/d/1NeBMAaS8wJQdXR1ki8HE-tuFdl17uKjAMi8x7oGiH2s/edit#heading=h.k3occn4jzx41'),
       );
   }
 
