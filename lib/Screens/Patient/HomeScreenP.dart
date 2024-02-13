@@ -246,15 +246,18 @@ class _HomeScreenPState extends State<HomeScreenP> {
       }
 
       carbsAverage = sum / (carbsRecords.length - diff);
-      carbsAverage = (carbsAverage * 100).round() / 100;
 
       if (carbsAverage.isInfinite || carbsAverage.isNaN) {
-        carbsAverage = 0.0;
+        setState(() {
+          carbsAverage = 0.0;
+        });
       }
 
       if (carbsRecords.isEmpty) {
         carbsAverage = 0.0;
       }
+
+      carbsAverage = (carbsAverage * 100).round() / 100;
 
       if (insulinRecords.isEmpty) {
         insulinAverage =  0.0;

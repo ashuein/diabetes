@@ -14,6 +14,8 @@ import '../../URL.dart';
 import 'ChangeHospital.dart';
 import 'package:http/http.dart' as http;
 
+import 'PrivacyPolicy.dart';
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -385,6 +387,45 @@ class _ProfilePageState extends State<ProfilePage> {
                               textStyle: const TextStyle(
                             fontSize: 16,
                           )),
+                        ),
+                        Icon(Icons.arrow_forward_ios),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PrivacyPolicyScreen(enableButton: false,),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff6373CC),
+                    textStyle: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    minimumSize: Size(MediaQuery.of(context).size.width, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Privacy Policy',
+                          style: GoogleFonts.inter(
+                              textStyle: const TextStyle(
+                                fontSize: 16,
+                              )),
                         ),
                         Icon(Icons.arrow_forward_ios),
                       ],

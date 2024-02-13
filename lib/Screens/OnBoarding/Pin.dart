@@ -1,3 +1,4 @@
+import 'package:diabetes_ms/Screens/Patient/PrivacyPolicy.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -74,13 +75,24 @@ class _PinScreenState extends State<PinScreen> {
                   ),textAlign: TextAlign.center,
               ),
               Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("If you forget your PIN, please contact either the hospital or the app administrator for assistance." ,
+                  style: GoogleFonts.inter(
+                    textStyle: const TextStyle(
+                        color: Color(0xffF86851),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
+                  ),textAlign: TextAlign.center,
+                ),
+              ),
+              Padding(
                 padding: const EdgeInsets.all(50.0),
                 child: ElevatedButton(
                   onPressed: ()  {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomeScreenP(),
+                        builder: (context) => PrivacyPolicyScreen(enableButton: true),
                       ),
                     );
                   },
