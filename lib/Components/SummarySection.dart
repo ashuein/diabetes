@@ -14,19 +14,24 @@ class SummarySection extends StatelessWidget {
       children: [
         SizedBox(height: 8.0),
         Container(
-          width: 60.0, // Adjust the size of the circular container
-          height: 60.0,
+          width: 75.0, // Adjust the size of the circular container
+          height: 75.0,
+          padding: EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Color(0xffF86851), // Adjust the color as needed
           ),
-          child: Center(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold// Adjust the text color as needed
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Center(
+              child: Text(
+                value,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold// Adjust the text color as needed
+                ),
               ),
             ),
           ),
