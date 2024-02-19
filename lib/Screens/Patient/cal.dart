@@ -1,5 +1,6 @@
 import 'package:diabetes_ms/Providers/UserInfo.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Providers/UserInfo.dart';
@@ -47,8 +48,62 @@ class _CalState extends State<Cal> {
   @override
   void initState() {
     super.initState();
-    fetchCurrIcrAndIcf(); // Load saved values when the widget is created
+    fetchCurrIcrAndIcf();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showPopup();
+    });// Load saved values when the widget is created
   }
+
+  void _showPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Important Notice',textAlign: TextAlign.center,),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Consult a Professional: ',style: TextStyle(
+                fontWeight: FontWeight.bold
+              ),),
+              Text('Always consult with a healthcare provider before adjusting your insulin dosage.'),
+              SizedBox(height: 8),
+              Text('Use with Caution: ',style: TextStyle(
+                  fontWeight: FontWeight.bold
+              ),),
+              Text('This tool offers guidance but may not consider all individual factors.'),
+              SizedBox(height: 8),
+              Text('Monitor Your Health: ',style: TextStyle(
+                  fontWeight: FontWeight.bold
+              ),),
+              Text('Regularly check your blood glucose levels and report any concerns to your healthcare provider.'),
+              SizedBox(height: 8),
+              Text('Your Responsibility: ',style: TextStyle(
+                  fontWeight: FontWeight.bold
+              ),),
+              Text('You are responsible for your insulin decisions.'),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Acknowledged',style: GoogleFonts.inter(
+                textStyle: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xffF86851),
+                ),
+              ),),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   Future<void> fetchCurrIcrAndIcf() async {
 
