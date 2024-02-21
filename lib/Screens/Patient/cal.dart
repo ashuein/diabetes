@@ -64,6 +64,11 @@ class _CalState extends State<Cal> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text('Your Responsibility: ',style: TextStyle(
+                  fontWeight: FontWeight.bold
+              ),),
+              Text('You are responsible for your insulin decisions and the App owner(s) will not be liable for any undesirable health effects due to wrong insulin dosage.'),
+              SizedBox(height: 8),
               Text('Consult a Professional: ',style: TextStyle(
                 fontWeight: FontWeight.bold
               ),),
@@ -78,11 +83,6 @@ class _CalState extends State<Cal> {
                   fontWeight: FontWeight.bold
               ),),
               Text('Regularly check your blood glucose levels and report any concerns to your healthcare provider.'),
-              SizedBox(height: 8),
-              Text('Your Responsibility: ',style: TextStyle(
-                  fontWeight: FontWeight.bold
-              ),),
-              Text('You are responsible for your insulin decisions.'),
             ],
           ),
           actions: <Widget>[
