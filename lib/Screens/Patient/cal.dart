@@ -241,7 +241,7 @@ class _CalState extends State<Cal> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: activityIntensity == 'Light'
+                          backgroundColor: activityIntensity == 'Light'
                               ? Color(0xFFF86851)
                               : Color(0xFF6373CC),
                         ),
@@ -254,7 +254,7 @@ class _CalState extends State<Cal> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: activityIntensity == 'Medium'
+                          backgroundColor: activityIntensity == 'Medium'
                               ? Color(0xFFF86851)
                               : Color(0xFF6373CC),
                         ),
@@ -267,7 +267,7 @@ class _CalState extends State<Cal> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: activityIntensity == 'Heavy'
+                          backgroundColor: activityIntensity == 'Heavy'
                               ? Color(0xFFF86851)
                               : Color(0xFF6373CC),
                         ),
@@ -451,7 +451,7 @@ class _CalState extends State<Cal> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFF86851),
+                  backgroundColor: Color(0xFFF86851),
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
